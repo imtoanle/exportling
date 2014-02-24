@@ -1,0 +1,14 @@
+<h2>Exports</h2>
+
+<table>
+  <% @exports.each do |export| %>
+    <tr>
+      <td><%= export.id %></td>
+      <td><%= export.klass %></td>
+      <td><%= export.created_at %></td>
+      <td><%= export.updated_at %></td>
+      <td><%= export.status %></td>
+      <td><%= export.url %></td>
+    </tr>
+  <% end %>
+</table>
