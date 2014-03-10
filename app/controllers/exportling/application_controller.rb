@@ -1,4 +1,3 @@
-module Exportling
-  class ApplicationController < ActionController::Base
-  end
+class Exportling::ApplicationController < ApplicationController
+  helper Exportling::ApplicationHelper
 end

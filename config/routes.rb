@@ -1,3 +1,5 @@
 Exportling::Engine.routes.draw do
-  resources :exports
+  resources :exports do
+    get :download
+  end
 end

@@ -1,14 +1,32 @@
 <h2>Exports</h2>
 
-<table>
+<p>Your recently created exports</p>
+
+<% unless @exports.empty? %>
+  <table class="table table-striped">
+    <tr>
+      <th>Id</th>
+      <th>Name</th>
+      <th>File Name</th>
+      <th>Type</th>
+      <th>Created</th>
+      <th>Updated</th>
+      <th>Status</th>
+      <th>Actions</th>
+    </tr>
   <% @exports.each do |export| %>
     <tr>
       <td><%= export.id %></td>
       <td><%= export.klass %></td>
+      <td><%= export.file_name %></td>
+      <td><%= export.file_type %></td>
       <td><%= export.created_at %></td>
       <td><%= export.updated_at %></td>
-      <td><%= export.status %></td>
-      <td><%= export.url %></td>
+      <td><%= export.status.capitalize %></td>
+      <td><% if export.completed? %><%= link_to 'Download', export_download_path(export) %><% end %></td>
     </tr>
   <% end %>
 </table>
+<% else %>
+  <p>No Exports Found</p>
+<% end %>

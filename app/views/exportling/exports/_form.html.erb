@@ -1,0 +1,7 @@
+<%= simple_form_for @export do |f| %>
+  <%= f.input :klass, as: :hidden %>
+  <%= f.input :method, as: :hidden %>
+  <%= f.input :params, as: :hidden %>
+  <%= f.input :file_type, as: :hidden %>
+  <%= f.submit %>
+<% end%>
