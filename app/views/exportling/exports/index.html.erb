@@ -23,7 +23,7 @@
       <td><%= export.created_at %></td>
       <td><%= export.updated_at %></td>
       <td><%= export.status.capitalize %></td>
-      <td><% if export.completed? %><%= link_to 'Download', export_download_path(export) %><% end %></td>
+      <td><% if export.completed? %><%= link_to 'Download', '#' %><% end %></td>
     </tr>
   <% end %>
 </table>

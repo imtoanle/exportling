@@ -1,7 +1,7 @@
 class CreateExport < ActiveRecord::Migration
   def change
     create_table :exportling_exports do |t|
-      t.belongs_to :user
+      t.references :owner
       t.string :klass, null: false
       t.string :method, null: false
       t.string :status, null: false, default: 'created'
