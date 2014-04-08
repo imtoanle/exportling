@@ -1,8 +1,5 @@
 # Base exporter class. Other export classes will extend this class
-# Class will act like a view/presenter, to make model data available for the export process
-# REVISE: See if the data selection/presentation should be defined elsewhere. We may just want to make this a fairly dumb exporter
-# TODO: Provide mechanism to specify query object (this may be the klass of the export object)
-# TODO: Provide mechanism to alter fields at runtime (maybe)
+# TODO: Provide mechanism to alter fields at runtime
 module Exportling
   class Exporter
     # This class is also responsible for queueing up the export into Sidekiq
@@ -11,13 +8,11 @@ module Exportling
 
     class << self
       attr_accessor :export_fields
+      attr_accessor :query
 
       # This will allow the extending class to specify fields as:
       # export_field :field_name
-      # TODO: Match this up to how the user would want to specify export fields
-      #
       def export_field(name)
-        # May not need a proxy. Just need to be able to store a field
         self.export_fields ||= []
         self.export_fields << name
       end
@@ -25,21 +20,70 @@ module Exportling
       def fields
         self.export_fields || []
       end
+
+      def query_object(klass=nil)
+        self.query = klass if klass
+        self.query
+      end
     end
 
-
-    # Perform the actual export work
-    # Make this an abstract method for now (will probably define some useful default behaviour here)
-    # args will probably just be an export_id. This method will fetch the export, and perform any actions from there
-    # TODO: This class is responsible for a lot (both storage and performance). See if we can split up at some point
-    def perform(export_id)
-      p "Performing background export"
-      # ... Do something
-    end
-
-    # Present all specified fields as a hash/object
+    # Access to class instance variables =============================
     def fields
       self.class.fields
+    end
+
+    def field_names
+      @field_names ||= fields.map(&:to_s)
+    end
+
+    def query_object
+      self.class.query_object
+    end
+
+    # Worker Methods ============================================================
+    def self.perform(export_id)
+      self.new.perform(export_id)
+    end
+
+    def perform(export_id)
+      @export = Exportling::Export.find(export_id)
+
+      # Don't perform export more than once (idempotence)
+      return if @export.completed?
+
+      on_start
+
+      find_each do |export_data|
+        on_entry(export_data)
+      end
+
+      on_finish
+
+      # Mark the export as complete
+      @export.complete!
+
+      # If there was an issue during the export process, make sure we fail the export
+      # Not implemented error will be raised if the export classes haven't been set up properly
+    rescue ::StandardError, ::NotImplementedError => e
+      @export.fail!
+    end
+
+    # Use model from export object, and pass query params to it
+    def find_each(&block)
+      query_object.new(@export.params).find_each(&block)
+    end
+
+    # Abstract Methods ================================================================
+    # No need for errors on start/finish, as the extending class may not need additional setup/teardown
+    def on_start
+    end
+
+    def on_finish
+    end
+
+    # Called for each entry of perform
+    def on_entry(export_data)
+      raise ::NotImplementedError, 'Handling of each entry (on_entry) must be performed in the extending class'
     end
   end
 end

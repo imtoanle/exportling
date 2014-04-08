@@ -23,6 +23,7 @@
       <td><%= export.created_at %></td>
       <td><%= export.updated_at %></td>
       <td><%= export.status.capitalize %></td>
+      <!-- TODO: Provide download link (probably use carrierwave) -->
       <td><% if export.completed? %><%= link_to 'Download', '#' %><% end %></td>
     </tr>
   <% end %>
