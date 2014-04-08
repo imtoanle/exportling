@@ -9,7 +9,7 @@ class Exportling::Export < ActiveRecord::Base
   mount_uploader :output, ::CarrierWave::Uploader::Base
 
   # Sidekiq worker class that will perform the export
-  def worker
+  def worker_class
     klass.constantize
   end
 
