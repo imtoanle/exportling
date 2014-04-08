@@ -1,12 +1,11 @@
 <!-- Doesn't really need to be a form if we are going to pass variables with GET -->
 <%= form_tag('/exportling/exports/new', method: :get) do -%>
-  <!-- Class will probably be the Export Worker Class in future -->
-  <%= hidden_field_tag :klass, 'House' %>
+  <%= hidden_field_tag :klass, 'HouseExporter' %>
   <!-- Not sure what our use for the method field is yet (if we need one) -->
   <%= hidden_field_tag :method, 'TODO' %>
   <!-- This is super insecure. Actual owner will need to be set/found in controller -->
   <%= hidden_field_tag :owner_id, user.id %>
-  <%= hidden_field_tag 'params[house_id]', house.id %>
-  <%= hidden_field_tag :file_type, 'pdf' %>
-  <%= submit_tag 'Export as PDF' %>
+  <%= hidden_field_tag 'params[house][id]', [house.id] %>
+  <%= hidden_field_tag :file_type, 'csv' %>
+  <%= submit_tag 'Export CSV' %>
 <% end -%>

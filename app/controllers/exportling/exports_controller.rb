@@ -18,15 +18,21 @@ class Exportling::ExportsController < Exportling::ApplicationController
     # TODO: security
     @export = Exportling::Export.new(export_params)
 
+    # Hashes are not permitted by strong parameters, so we need to pull the params out separately
+    # See: https://github.com/rails/strong_parameters#permitted-scalar-values
+    @export.params = params[:export][:params]
+
     # TODO: Major sercurity
     # We Need to allow main application to specify owner in control action, rather than just supplying it in the form
     @export.owner = Exportling.export_owner_class.find(params[:export][:owner_id])
 
-    byebug
-
     # TODO: Some kind of error handling
     if @export.valid?
       @export.save
+
+      # FIXME: Sidekiq isn't picking these jobs up (probably not configured correctly locally)
+      # @export.worker.perform_async(@export.id)
+      @export.worker.perform(@export.id)  # Perform export synchronously for now
 
       redirect_to exports_path
     end
@@ -42,7 +48,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
 
   def export_params
     params.require(:export).permit(
-      :klass, :params, :method, :file_type
+      :klass, :method, :file_type
     )
   end
 end
