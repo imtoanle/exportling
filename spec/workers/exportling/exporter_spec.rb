@@ -32,23 +32,23 @@ describe Exportling::Exporter do
     end
   end
 
-  describe '.query_object' do
+  describe '.query_class' do
     context 'not set' do
-      specify { expect(Exportling::Exporter.query_object).to be_nil }
+      specify { expect(Exportling::Exporter.query_class).to be_nil }
     end
 
     context 'set in extending class' do
-      specify { expect(HouseExporter.query_object).to eq HouseExporterQuery }
+      specify { expect(HouseExporter.query_class).to eq HouseExporterQuery }
     end
   end
 
-  describe '#query_object' do
+  describe '#query_class' do
     context 'not set' do
-      specify { expect(Exportling::Exporter.new.query_object).to be_nil }
+      specify { expect(Exportling::Exporter.new.query_class).to be_nil }
     end
 
     context 'set in extending class' do
-      specify { expect(HouseExporter.new.query_object).to eq HouseExporterQuery }
+      specify { expect(HouseExporter.new.query_class).to eq HouseExporterQuery }
     end
   end
 
@@ -96,12 +96,12 @@ describe Exportling::Exporter do
 
   describe '#find_each' do
     let(:exporter)     { HouseExporter.new }
-    let(:query_object) { exporter.query_object }
+    let(:query_class) { exporter.query_class }
 
     before { exporter.instance_variable_set(:@export, double('export', params: {})) }
 
     it 'calls #find_each of the query object' do
-      expect_any_instance_of(query_object).to receive(:find_each)
+      expect_any_instance_of(query_class).to receive(:find_each)
       exporter.find_each{ |i| }
     end
   end

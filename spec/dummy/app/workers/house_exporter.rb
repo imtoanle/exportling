@@ -4,7 +4,7 @@ class HouseExporter < Exportling::Exporter
   export_field :price
   export_field :square_meters
 
-  query_object HouseExporterQuery
+  query_class HouseExporterQuery
 
   include CsvExporter
 end

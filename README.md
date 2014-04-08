@@ -37,7 +37,7 @@ Add assets
 `app/assets/stylesheets/application.scss`
 
     *= require exportling/exportling
-    
+
 ## Current State
 Exportling currently allows a developer to specify a single model to be exported. No nesting/associations are available yet, exports are performed when requested (not by a background worker), and no download link is available for the export.
 
@@ -74,8 +74,8 @@ The exporter class is responsible for defining the fields to be exported, the qu
       export_field :square_meters
 
       # Specify the query object that should be used to retrieve the model data
-      query_object HouseExporterQuery
-      
+      query_class HouseExporterQuery
+
       # Called at the start of parent perform
       # Open a new csv file, and add field headers
       def on_start

@@ -21,8 +21,8 @@ module Exportling
         self.export_fields || []
       end
 
-      def query_object(klass=nil)
-        self.query = klass if klass
+      def query_class(klass=nil)
+        self.query = klass unless klass.nil?
         self.query
       end
     end
@@ -36,13 +36,14 @@ module Exportling
       @field_names ||= fields.map(&:to_s)
     end
 
-    def query_object
-      self.class.query_object
+    def query_class
+      self.class.query_class
     end
 
     # Worker Methods ============================================================
+    # Shortcut to instance peform method
     def self.perform(export_id)
-      self.new.perform(export_id)
+      new.perform(export_id)
     end
 
     def perform(export_id)
@@ -70,7 +71,7 @@ module Exportling
 
     # Use model from export object, and pass query params to it
     def find_each(&block)
-      query_object.new(@export.params).find_each(&block)
+      query_class.new(@export.params).find_each(&block)
     end
 
     # Abstract Methods ================================================================
