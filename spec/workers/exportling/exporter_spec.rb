@@ -70,8 +70,12 @@ describe Exportling::Exporter do
     context 'export already completed' do
       before { export.complete! }
 
-      # Check that this displays the opposite behaviour of below (calls nothing)
-      xit 'does nothing if the export is completed'
+      it 'does nothing' do
+        expect(exporter).to receive(:on_start).never
+        expect(exporter).to receive(:on_finish).never
+        expect(exporter).to receive(:on_entry).never
+        subject
+      end
     end
 
     context 'export not completed' do

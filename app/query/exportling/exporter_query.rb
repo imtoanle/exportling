@@ -1,3 +1,6 @@
+# TODO: Consider removing the need for an explicit query class.
+#       As this class only acts as a thin ActiveRecord wrapper anyway, we should be able to use any class with
+#       a find_each method
 module Exportling
   class ExporterQuery
     # This should be overwritten in the extending class
@@ -6,7 +9,6 @@ module Exportling
       @options  = options
       @relation = relation
     end
-
 
     def find_each(&block)
       if query_options.present?

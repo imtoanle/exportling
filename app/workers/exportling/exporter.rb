@@ -3,7 +3,7 @@
 module Exportling
   class Exporter
     # This class is also responsible for queueing up the export into Sidekiq
-    include ::Sidekiq::Worker
+    include Sidekiq::Worker
     sidekiq_options queue: 'exportling_exports'
 
     class << self
@@ -18,7 +18,7 @@ module Exportling
       end
 
       def fields
-        self.export_fields || []
+        export_fields || []
       end
 
       def query_class(klass=nil)
