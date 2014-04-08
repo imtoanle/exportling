@@ -1,0 +1,29 @@
+<h1>Houses</h1>
+
+<% unless @houses.empty? %>
+  <table class="table table-striped">
+    <tr>
+      <th>Id</th>
+      <th>Price</th>
+      <th>Square Meters</th>
+      <th>Furnished</th>
+      <th>Created</th>
+      <th>Updated</th>
+      <th>Actions</th>
+    </tr>
+  <% @houses.each do |house| %>
+    <tr>
+      <td><%= house.id %></td>
+      <td><%= house.price %></td>
+      <td><%= house.square_meters %></td>
+      <td><%= house.furnished %></td>
+      <td><%= house.created_at %></td>
+      <td><%= house.updated_at %></td>
+      <td><%= render 'export_form', { house: house, user: @user } %></td>
+    </tr>
+  <% end %>
+</table>
+<% else %>
+  <p>No Houses Found</p>
+<% end %>
+

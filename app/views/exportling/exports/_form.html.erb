@@ -1,7 +1,10 @@
-<%= simple_form_for @export do |f| %>
-  <%= f.input :klass, as: :hidden %>
-  <%= f.input :method, as: :hidden %>
-  <%= f.input :params, as: :hidden %>
-  <%= f.input :file_type, as: :hidden %>
+<%= form_for @export do |f| %>
+  <%= f.hidden_field :klass %>
+  <%= f.hidden_field :method %>
+  <!-- TODO: Fix Unsecure setting of owner. -->
+  <%= f.hidden_field :owner_id %>
+  <%= hash_to_hidden_fields({ export: { params: @export.params } }) %>
+  <%= f.hidden_field :file_type %>
+
   <%= f.submit %>
 <% end%>
