@@ -2,12 +2,12 @@ require 'spec_helper'
 
 describe Exportling::Export do
   # This exporter is defined in the dummy app
-  let(:exporter)  { HouseExporter }
-  let(:export)    { create(:export, klass: exporter.to_s, status: 'foo') }
+  let(:exporter_class)  { HouseExporter }
+  let(:export)          { create(:export, klass: exporter_class.to_s, status: 'foo') }
 
-  describe '#worker' do
+  describe '#worker_class' do
     subject { export.worker_class }
-    specify { expect(subject).to eq exporter }
+    specify { expect(subject).to eq exporter_class }
   end
 
   describe 'completed?' do

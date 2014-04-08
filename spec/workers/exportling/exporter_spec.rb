@@ -61,16 +61,36 @@ describe Exportling::Exporter do
   end
 
   describe '#perform' do
-    subject { Exportling::Exporter.perform(export.id) }
+    let(:exporter_class)  { HouseExporter }
+    let(:exporter)        { exporter_class.new }
+    let(:export)          { create(:export, klass: exporter_class.to_s, status: 'created') }
+
+    subject { exporter.perform(export.id) }
 
     context 'export already completed' do
+      before { export.complete! }
+
+      # Check that this displays the opposite behaviour of below (calls nothing)
       xit 'does nothing if the export is completed'
     end
 
     context 'export not completed' do
-      xit 'calls on_start callback once'
-      xit 'calls on_finish callback once'
-      xit 'calls on_entry callback once per entry'
+      it 'calls on_start callback once' do
+        expect(exporter).to receive(:on_start).once
+        subject
+      end
+
+      it 'calls on_start callback once' do
+        expect(exporter).to receive(:on_finish).once
+        subject
+      end
+
+      it 'calls on_entry callback once per entry' do
+        allow(exporter).to receive(:find_each).and_yield(:foo).and_yield(:bar)
+        expect(exporter).to receive(:on_entry).with(:foo).ordered
+        expect(exporter).to receive(:on_entry).with(:bar).ordered
+        subject
+      end
     end
   end
 
