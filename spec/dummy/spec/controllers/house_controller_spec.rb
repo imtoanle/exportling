@@ -8,12 +8,4 @@ describe HouseController do
       expect(response).to be_success
     end
   end
-
-  describe "GET 'export'" do
-    it "returns http success" do
-      get 'export'
-      expect(response).to be_success
-    end
-  end
-
 end
