@@ -2,6 +2,12 @@ require 'spec_helper'
 
 describe Exportling::Exporter do
 
+  describe 'abstract_methods' do
+    specify { expect(described_class).to define_abstract_method :on_start }
+    specify { expect(described_class).to define_abstract_method :on_entry }
+    specify { expect(described_class).to define_abstract_method :on_finish }
+  end
+
   describe '.fields' do
     context 'no fields have been set' do
       specify { expect(Exportling::Exporter.fields).to be_empty }
@@ -96,6 +102,19 @@ describe Exportling::Exporter do
         subject
       end
     end
+
+    describe 'export' do
+      context 'successful' do
+        xit 'markes the export as completed'
+      end
+      context 'failed' do
+        xit 'marks the export as failed'
+      end
+    end
+
+    describe 'temp file' do
+      xit 'is always deleted' # Even on raise during export process
+    end
   end
 
   describe '#find_each' do
@@ -107,16 +126,6 @@ describe Exportling::Exporter do
     it 'calls #find_each of the query object' do
       expect_any_instance_of(query_class).to receive(:find_each)
       exporter.find_each{ |i| }
-    end
-  end
-
-  describe 'abstract_methods' do
-    it { should respond_to :on_start }
-    it { should respond_to :on_finish }
-    it { should respond_to :on_entry }
-
-    describe '#on_entry' do
-      specify { expect{ described_class.new.on_entry({}) }.to raise_error NotImplementedError }
     end
   end
 end
