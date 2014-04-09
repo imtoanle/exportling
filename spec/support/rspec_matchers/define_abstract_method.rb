@@ -1,3 +1,8 @@
+# Ensure an abstract method has been correctly defined
+# Correctly defined means that the instance method is present, and raises a NotImplementedError when called
+# Usage:
+#   specify { expect(described_class).to define_abstract_method :on_start }
+# NOTE: This matcher will only work for classes that can be initialised without params
 RSpec::Matchers.define :define_abstract_method do |method_name|
   match do |klass|
     return false unless klass.method_defined? method_name
