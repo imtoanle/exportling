@@ -70,7 +70,7 @@ module Exportling
       @temp_export_file = nil
     end
 
-    # Calls the on_finish callback, attaches the generated file to the model then deletes the temp file.
+    # Calls the on_finish callback and attaches the generated file to the model
     # Finally, flags the export as complete
     def finish_export
       on_finish
@@ -88,7 +88,7 @@ module Exportling
     end
 
     # Abstract Methods ================================================================
-    # The temp file is accessable to the entire class, so accepting it as an argument isn't really needed
+    # The temp file is an instance variable, so accepting it as an argument isn't really needed
     # However, requiring it to be accepted as a param by on_start helps enforce its use by extending classes
     def on_start(temp_file)
       raise ::NotImplementedError, 'on_start must be implemented in the extending class, and must accept a file'
