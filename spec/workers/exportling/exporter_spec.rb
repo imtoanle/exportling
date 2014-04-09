@@ -103,17 +103,44 @@ describe Exportling::Exporter do
       end
     end
 
-    describe 'export' do
-      context 'successful' do
-        xit 'markes the export as completed'
+    describe 'export status' do
+      context 'when successful' do
+        specify do
+          expect{exporter.perform(export.id)}.to change{export.reload.status}.to 'completed'
+        end
       end
-      context 'failed' do
-        xit 'marks the export as failed'
+      context 'when failed' do
+        # simulate export failure
+        before { allow(exporter).to receive(:finish_export).and_raise(StandardError) }
+
+        specify do
+          expect{exporter.perform(export.id)}.to change{export.reload.status}.to 'failed'
+        end
       end
     end
 
     describe 'temp file' do
-      xit 'is always deleted' # Even on raise during export process
+      # Set the instance variable before running the test, so it will be initially set,
+      # regardless of whether it is created by the perform method
+      before  { exporter.instance_variable_set(:@temp_export_file, 'not nil') }
+      subject { exporter.instance_variable_get(:@temp_export_file) }
+
+      context 'when export successful' do
+        it 'is deleted' do
+          exporter.perform(export.id)
+          expect(subject).to be_nil
+        end
+      end
+
+      context 'when export fails' do
+        # simulate export failure
+        before { allow(exporter).to receive(:finish_export).and_raise(StandardError) }
+
+        it 'is deleted' do
+          exporter.perform(export.id)
+          expect(subject).to be_nil
+        end
+      end
     end
   end
 
