@@ -1,8 +1,11 @@
 # TODO: Ensure all exports scoped to owner
 class Exportling::ExportsController < Exportling::ApplicationController
+  decorates_assigned :export
+
   def index
+    # TODO: Limit exports to those associated with current owner
     # @exports = Exportling::Export.where(owner: params[:owner_id])
-    @exports = Exportling::Export.all
+    @exports = Exportling::ExportDecorator.decorate_collection(Exportling::Export.all)
   end
 
   def new
@@ -39,13 +42,10 @@ class Exportling::ExportsController < Exportling::ApplicationController
   end
 
   def download
+    # TODO: security
     @export = Exportling::Export.find(params[:export_id])
 
     send_file @export.output.path, disposition: 'attachment', x_sendfile: true
-    # TODO: security
-
-    # FIXME: provide a way to download the file
-    # redirect_to @export.output.url
   end
 
   def export_params

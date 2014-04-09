@@ -14,21 +14,8 @@
       <th>Status</th>
       <th>Actions</th>
     </tr>
-  <% @exports.each do |export| %>
-    <tr>
-      <td><%= export.id %></td>
-      <td><%= export.klass %></td>
-      <td><%= export.file_name %></td>
-      <td><%= export.file_type %></td>
-      <td><%= export.created_at %></td>
-      <td><%= export.updated_at %></td>
-      <td><%= export.status.capitalize %></td>
-      <!-- TODO: Decorate export to provide link -->
-      <% export_download_path = "/exportling/export/#{export.owner_id}/#{export.id}/#{File.basename(export.output.url)}" %>
-      <td><% if export.completed? %><%= link_to 'Download', export_download_path %><% end %></td>
-    </tr>
-  <% end %>
-</table>
+    <%= render @exports %>
+  </table>
 <% else %>
   <p>No Exports Found</p>
 <% end %>

@@ -17,9 +17,11 @@ Gem::Specification.new do |s|
   s.test_files = Dir["spec/**/*"]
 
   s.add_dependency "rails", "~> 4.0"
-  s.add_dependency "carrierwave"
-  s.add_dependency "sidekiq"
+  # TODO: Version dependencies
+  s.add_dependency 'carrierwave'
+  s.add_dependency 'sidekiq'
   s.add_dependency 'hash_to_hidden_fields'
+  s.add_dependency 'draper'
 
   s.add_development_dependency "rspec-rails", '~> 3.0.0.beta'
   s.add_development_dependency 'factory_girl_rails'

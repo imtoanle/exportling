@@ -6,6 +6,7 @@ module Exportling
     require 'sidekiq'
     require 'carrierwave'
     require 'hash_to_hidden_fields'
+    require 'draper'
 
     # Set up the test suite to use rspec and factorygirl
     config.generators do |g|
