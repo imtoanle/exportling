@@ -5,8 +5,8 @@ module CsvExporter
     # Called at the start of parent perform
     # Open a new csv file, and add field headers
     def on_start
-      csv_file_name = "#{Rails.root}/tmp/exports/#{@export.file_name}"
-      @csv = CSV.open(csv_file_name, 'wb')
+      csv_temp_path = "#{Rails.root}/tmp/exports/#{@export.file_name}"
+      @csv = CSV.open(csv_temp_path, 'wb')
       @csv << field_names
     end
 
@@ -19,6 +19,7 @@ module CsvExporter
     # Write the CSV to file
     def on_finish
       @csv.close_write
+      @csv
     end
   end
 end

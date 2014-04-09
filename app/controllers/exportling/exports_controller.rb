@@ -31,8 +31,8 @@ class Exportling::ExportsController < Exportling::ApplicationController
       @export.save
 
       # FIXME: Sidekiq isn't picking these jobs up (probably not configured correctly locally)
-      # @export.worker.perform_async(@export.id)
-      @export.worker.perform(@export.id)  # Perform export synchronously for now
+      # @export.worker_class.perform_async(@export.id)
+      @export.worker_class.perform(@export.id)  # Perform export synchronously for now
 
       redirect_to exports_path
     end
@@ -40,6 +40,8 @@ class Exportling::ExportsController < Exportling::ApplicationController
 
   def download
     @export = Exportling::Export.find(params[:export_id])
+
+    send_file @export.output.path, disposition: 'attachment', x_sendfile: true
     # TODO: security
 
     # FIXME: provide a way to download the file

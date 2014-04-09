@@ -7,7 +7,7 @@ class Exportling::Export < ActiveRecord::Base
   serialize :params
 
   # TODO: Use carrierwave to provide export downloads
-  # mount_uploader :output, ::CarrierWave::Uploader::Base
+  mount_uploader :output, ExportUploader
 
   # Sidekiq worker class that will perform the export
   def worker_class
