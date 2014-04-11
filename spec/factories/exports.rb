@@ -5,7 +5,6 @@ FactoryGirl.define do
     status 'created'
     file_type 'csv'
 
-
     # TODO: build a house object from another factory if none provided
     params Hash[house: { id: 2 }]
 

@@ -5,12 +5,16 @@ module Exportling
 
     storage :file
 
+    def base_dir
+      "#{Rails.root}/#{Exportling.base_storage_directory}"
+    end
+
     def store_dir
-      "#{Rails.root}/#{Exportling.base_storage_directory}/exports/#{model.owner_id}"
+      "#{base_dir}/exports/#{model.owner_id}"
     end
 
     def cache_dir
-      "#{Rails.root}/#{Exportling.base_storage_directory}/tmp/exports/#{model.owner_id}"
+      "#{base_dir}/tmp/exports/#{model.owner_id}"
     end
   end
 end

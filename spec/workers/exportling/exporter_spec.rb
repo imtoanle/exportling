@@ -106,7 +106,7 @@ describe Exportling::Exporter do
     describe 'export status' do
       context 'when successful' do
         specify do
-          expect{exporter.perform(export.id)}.to change{export.reload.status}.to 'completed'
+          expect{exporter.perform(export.id)}.to change{export.reload.status}.to('completed')
         end
       end
       context 'when failed' do
@@ -114,7 +114,7 @@ describe Exportling::Exporter do
         before { allow(exporter).to receive(:finish_export).and_raise(StandardError) }
 
         specify do
-          expect{exporter.perform(export.id)}.to change{export.reload.status}.to 'failed'
+          expect{exporter.perform(export.id)}.to change{export.reload.status}.to('failed')
         end
       end
     end
