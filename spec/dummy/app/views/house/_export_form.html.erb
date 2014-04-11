@@ -1,5 +1,4 @@
-<!-- Doesn't really need to be a form if we are going to pass variables with GET -->
-<%= form_tag('/exportling/exports/new', method: :get) do -%>
+<%= form_tag("#{export_engine.exports_path}/new", method: :get) do -%>
   <%= hidden_field_tag :klass, 'HouseExporter' %>
   <!-- Not sure what our use for the method field is yet (if we need one) -->
   <%= hidden_field_tag :method, 'TODO' %>
