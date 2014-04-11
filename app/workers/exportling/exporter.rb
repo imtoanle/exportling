@@ -76,10 +76,11 @@ module Exportling
       on_finish
 
       # Save the generated file against the export object
-      @export.output = @temp_export_file
-      @export.save!
-
-      @export.complete!
+      @export.transaction do
+        @export.output = @temp_export_file
+        @export.save!
+        @export.complete!
+      end
     end
 
     # Use model from export object, and pass query params to it
