@@ -45,7 +45,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
     # TODO: security
     @export = Exportling::Export.find(params[:export_id])
 
-    send_file @export.output.path, disposition: 'attachment', x_sendfile: true
+    send_file @export.output.path, disposition: 'attachment', x_sendfile: true, filename: @export.file_name
   end
 
   def export_params
