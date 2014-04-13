@@ -45,4 +45,41 @@ describe Exportling::Export do
       specify { expect(subject).to eq 'failed' }
     end
   end
+
+  describe 'Uploader' do
+    let(:temp_export_file)      { Tempfile.new('test_export_file') }
+    let(:temp_export_filename)  { File.basename(temp_export_file) }
+    let(:expected_file_path) do
+      "#{Rails.root}/#{Exportling.base_storage_directory}"\
+      "/exports/#{export.owner_id}/#{temp_export_filename}"
+    end
+
+    before  { File.delete(expected_file_path) if File.exists?(expected_file_path) }
+    after   { File.delete(expected_file_path) if File.exists?(expected_file_path) }
+
+    describe '#output' do
+      subject { export.output }
+      context 'when no file added' do
+        specify { expect(subject).to be_a(Exportling::ExportUploader) }
+        specify { expect(subject.path).to be_nil }
+        it 'does not create the file' do
+          expect(File.exists?(expected_file_path)).to eq false
+        end
+
+      end
+
+      context 'when file added' do
+        before do
+          export.output = temp_export_file
+          export.save!
+        end
+
+        specify { expect(subject).to be_a(Exportling::ExportUploader) }
+        specify { expect(subject.path).to eq expected_file_path }
+        it 'creates the file' do
+          expect(File.exists?(expected_file_path)).to eq true
+        end
+      end
+    end
+  end
 end
