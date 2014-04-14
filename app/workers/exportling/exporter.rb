@@ -6,39 +6,7 @@ module Exportling
     include Sidekiq::Worker
     sidekiq_options queue: 'exportling_exports'
 
-    class << self
-      attr_accessor :export_fields
-      attr_accessor :query
-
-      # This will allow the extending class to specify fields as:
-      # export_field :field_name
-      def export_field(name)
-        self.export_fields ||= []
-        self.export_fields << name
-      end
-
-      def fields
-        export_fields || []
-      end
-
-      def query_class(klass=nil)
-        self.query = klass unless klass.nil?
-        self.query
-      end
-    end
-
-    # Access to class instance variables =============================
-    def fields
-      self.class.fields
-    end
-
-    def field_names
-      @field_names ||= fields.map(&:to_s)
-    end
-
-    def query_class
-      self.class.query_class
-    end
+    include Exportling::Exporter::ClassInstanceVariables
 
     # Worker Methods ============================================================
     # Shortcut to instance peform method
