@@ -3,7 +3,7 @@ module Exportling
     extend ActiveSupport::Concern
 
     included do
-      delegate :fields, :field_names, :query_class, to: :class
+      delegate :fields, :field_names, :query_class, :associations, to: :class
     end
 
     module ClassMethods

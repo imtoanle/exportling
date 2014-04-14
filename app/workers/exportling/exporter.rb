@@ -6,7 +6,7 @@ module Exportling
     include Sidekiq::Worker
     sidekiq_options queue: 'exportling_exports'
 
-    include Exportling::Exporter::ClassInstanceVariables
+    include ClassInstanceVariables
 
     # Worker Methods ============================================================
     # Shortcut to instance peform method

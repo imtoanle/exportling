@@ -6,5 +6,8 @@ class HouseExporter < Exportling::Exporter
 
   query_class HouseExporterQuery
 
+  # TODO: Find way to specify additional options to pass to the exporter (e.g. the id of the current house)
+  export_association rooms: RoomExporter
+
   include CsvExporter
 end
