@@ -2,6 +2,12 @@ require 'spec_helper'
 
 describe Exportling::Exporter do
 
+  describe 'abstract_methods' do
+    specify { expect(described_class).to define_abstract_method :on_start }
+    specify { expect(described_class).to define_abstract_method :on_entry }
+    specify { expect(described_class).to define_abstract_method :on_finish }
+  end
+
   describe '.fields' do
     context 'no fields have been set' do
       specify { expect(Exportling::Exporter.fields).to be_empty }
@@ -96,6 +102,46 @@ describe Exportling::Exporter do
         subject
       end
     end
+
+    describe 'export status' do
+      context 'when successful' do
+        specify do
+          expect{exporter.perform(export.id)}.to change{export.reload.status}.to('completed')
+        end
+      end
+      context 'when failed' do
+        # simulate export failure
+        before { allow(exporter).to receive(:finish_export).and_raise(StandardError) }
+
+        specify do
+          expect{exporter.perform(export.id)}.to change{export.reload.status}.to('failed')
+        end
+      end
+    end
+
+    describe 'temp file' do
+      # Set the instance variable before running the test, so it will be initially set,
+      # regardless of whether it is created by the perform method
+      before  { exporter.instance_variable_set(:@temp_export_file, 'not nil') }
+      subject { exporter.instance_variable_get(:@temp_export_file) }
+
+      context 'when export successful' do
+        it 'is deleted' do
+          exporter.perform(export.id)
+          expect(subject).to be_nil
+        end
+      end
+
+      context 'when export fails' do
+        # simulate export failure
+        before { allow(exporter).to receive(:finish_export).and_raise(StandardError) }
+
+        it 'is deleted' do
+          exporter.perform(export.id)
+          expect(subject).to be_nil
+        end
+      end
+    end
   end
 
   describe '#find_each' do
@@ -107,16 +153,6 @@ describe Exportling::Exporter do
     it 'calls #find_each of the query object' do
       expect_any_instance_of(query_class).to receive(:find_each)
       exporter.find_each{ |i| }
-    end
-  end
-
-  describe 'abstract_methods' do
-    it { should respond_to :on_start }
-    it { should respond_to :on_finish }
-    it { should respond_to :on_entry }
-
-    describe '#on_entry' do
-      specify { expect{ described_class.new.on_entry({}) }.to raise_error NotImplementedError }
     end
   end
 end

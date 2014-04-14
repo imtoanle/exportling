@@ -14,20 +14,8 @@
       <th>Status</th>
       <th>Actions</th>
     </tr>
-  <% @exports.each do |export| %>
-    <tr>
-      <td><%= export.id %></td>
-      <td><%= export.klass %></td>
-      <td><%= export.file_name %></td>
-      <td><%= export.file_type %></td>
-      <td><%= export.created_at %></td>
-      <td><%= export.updated_at %></td>
-      <td><%= export.status.capitalize %></td>
-      <!-- TODO: Provide download link (probably use carrierwave) -->
-      <td><% if export.completed? %><%= link_to 'Download', '#' %><% end %></td>
-    </tr>
-  <% end %>
-</table>
+    <%= render @exports %>
+  </table>
 <% else %>
   <p>No Exports Found</p>
 <% end %>

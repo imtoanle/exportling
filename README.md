@@ -38,11 +38,19 @@ Add assets
 
     *= require exportling/exportling
 
-Set the export owner class (used to scope exports to a parent)
+
+Configure Exportling in your application
 
 `config/initializers/exportling.rb`
 
+    # (Recommended) Set the export owner class (used to scope exports to a parent)
     Exportling.export_owner_class = "User"
+    
+    # (Optional) Set the export save directory ('exportling' by default)
+    # All files will be saved under custom_exportling_directory/exports/owner_id/
+    Exportling.base_storage_directory = 'custom_exportling_directory'
+
+
 
 ## Current State
 Exportling currently allows a developer to specify a single model to be exported. No nesting/associations are available yet, exports are performed when requested (not by a background worker), and no download link is available for the export.

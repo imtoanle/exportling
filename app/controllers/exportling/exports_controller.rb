@@ -1,8 +1,11 @@
 # TODO: Ensure all exports scoped to owner
 class Exportling::ExportsController < Exportling::ApplicationController
+  decorates_assigned :export
+
   def index
+    # TODO: Limit exports to those associated with current owner
     # @exports = Exportling::Export.where(owner: params[:owner_id])
-    @exports = Exportling::Export.all
+    @exports = Exportling::ExportDecorator.decorate_collection(Exportling::Export.all)
   end
 
   def new
@@ -31,19 +34,18 @@ class Exportling::ExportsController < Exportling::ApplicationController
       @export.save
 
       # FIXME: Sidekiq isn't picking these jobs up (probably not configured correctly locally)
-      # @export.worker.perform_async(@export.id)
-      @export.worker.perform(@export.id)  # Perform export synchronously for now
+      # @export.worker_class.perform_async(@export.id)
+      @export.worker_class.perform(@export.id)  # Perform export synchronously for now
 
       redirect_to exports_path
     end
   end
 
   def download
-    @export = Exportling::Export.find(params[:export_id])
     # TODO: security
+    @export = Exportling::Export.find(params[:id])
 
-    # FIXME: provide a way to download the file
-    # redirect_to @export.output.url
+    send_file @export.output.path, disposition: 'attachment', x_sendfile: true, filename: @export.file_name
   end
 
   def export_params

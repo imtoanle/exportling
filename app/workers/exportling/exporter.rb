@@ -52,21 +52,35 @@ module Exportling
       # Don't perform export more than once (idempotence)
       return if @export.completed?
 
-      on_start
+      @temp_export_file = Tempfile.new('export')
+      on_start(@temp_export_file)
 
       find_each do |export_data|
         on_entry(export_data)
       end
 
-      on_finish
-
-      # Mark the export as complete
-      @export.complete!
+      finish_export
 
       # If there was an issue during the export process, make sure we fail the export
       # Not implemented error will be raised if the export classes haven't been set up properly
     rescue ::StandardError, ::NotImplementedError => e
       @export.fail!
+    ensure
+      @temp_export_file.unlink unless @temp_export_file.nil?
+      @temp_export_file = nil
+    end
+
+    # Calls the on_finish callback and attaches the generated file to the model
+    # Finally, flags the export as complete
+    def finish_export
+      on_finish
+
+      # Save the generated file against the export object
+      @export.transaction do
+        @export.output = @temp_export_file
+        @export.save!
+        @export.complete!
+      end
     end
 
     # Use model from export object, and pass query params to it
@@ -75,11 +89,14 @@ module Exportling
     end
 
     # Abstract Methods ================================================================
-    # No need for errors on start/finish, as the extending class may not need additional setup/teardown
-    def on_start
+    # The temp file is an instance variable, so accepting it as an argument isn't really needed
+    # However, requiring it to be accepted as a param by on_start helps enforce its use by extending classes
+    def on_start(temp_file)
+      raise ::NotImplementedError, 'on_start must be implemented in the extending class, and must accept a file'
     end
 
     def on_finish
+      raise ::NotImplementedError, 'on_finish must be implemented in the extending class'
     end
 
     # Called for each entry of perform

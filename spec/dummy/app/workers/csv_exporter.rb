@@ -4,9 +4,8 @@ module CsvExporter
   included do
     # Called at the start of parent perform
     # Open a new csv file, and add field headers
-    def on_start
-      csv_file_name = "#{Rails.root}/tmp/exports/#{@export.file_name}"
-      @csv = CSV.open(csv_file_name, 'wb')
+    def on_start(temp_file)
+      @csv = CSV.open(temp_file, 'wb')
       @csv << field_names
     end
 

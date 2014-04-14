@@ -1,6 +1,8 @@
 Exportling::Engine.routes.draw do
   resources :exports do
-    get :download
+    member do
+      get :download
+    end
   end
 
   root to: 'exports#index'
