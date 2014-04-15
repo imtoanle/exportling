@@ -7,60 +7,54 @@ module Exportling
     sidekiq_options queue: 'exportling_exports'
 
     include ClassInstanceVariables
+    include RootExporterMethods
+    include ChildExporterMethods
 
     # Worker Methods ============================================================
     # Shortcut to instance peform method
-    def self.perform(export_id)
-      new.perform(export_id)
+    def self.perform(export_id, options={})
+      new.perform(export_id, options)
     end
 
-    def perform(export_id)
-      @export = Exportling::Export.find(export_id)
+    # Allow options { as: :child } to be passed, which will not create any files, or flag the export as complete
+    def perform(export_id, options={})
+      @export  = Exportling::Export.find(export_id)
+      @options = options
+      @child   = options[:as] == :child
 
       # Don't perform export more than once (idempotence)
       return if @export.completed?
 
-      @temp_export_file = Tempfile.new('export')
-      on_start(@temp_export_file)
-
-      find_each do |export_data|
-        on_entry(export_data)
+      # Run the rest of the export as if we are a root or child exporter, depending on perform arguments
+      if @child
+        perform_as_child
+      else
+        perform_as_root
       end
 
-      finish_export
-
-      # If there was an issue during the export process, make sure we fail the export
-      # Not implemented error will be raised if the export classes haven't been set up properly
+    # If there was an issue during the export process, make sure we fail the export
+    # Not implemented error will be raised if the export classes haven't been set up properly
     rescue ::StandardError, ::NotImplementedError => e
-      @export.fail!
-    ensure
-      @temp_export_file.unlink unless @temp_export_file.nil?
-      @temp_export_file = nil
+      @export.fail! if @export
     end
 
-    # Calls the on_finish callback and attaches the generated file to the model
-    # Finally, flags the export as complete
-    def finish_export
-      on_finish
 
-      # Save the generated file against the export object
-      @export.transaction do
-        @export.output = @temp_export_file
-        @export.save!
-        @export.complete!
       end
     end
 
-    # Use model from export object, and pass query params to it
-    def find_each(&block)
-      query_class.new(@export.params).find_each(&block)
+    # Takes all associations for this exporter, and requests their data
+    def associated_data_for(context_object)
+      associations.each do |assoc_name, assoc_details|
+
+        assoc_details.exporter_class.perform(@export.id, assoc_details.child_options(context_object))
+      end
     end
 
     # Abstract Methods ================================================================
     # The temp file is an instance variable, so accepting it as an argument isn't really needed
     # However, requiring it to be accepted as a param by on_start helps enforce its use by extending classes
-    def on_start(temp_file)
-      raise ::NotImplementedError, 'on_start must be implemented in the extending class, and must accept a file'
+    def on_start(temp_file=nil)
+      raise ::NotImplementedError, 'on_start must be implemented in the extending class'
     end
 
     def on_finish
