@@ -29,10 +29,13 @@ module Exportling
 
       # This will allow the extending class to specify fields as:
       # export_association { association_name: AssociationExporter }
-      # TODO: Allow additional options
       def export_association(details)
         self.export_associations ||= {}
-        self.export_associations.merge!(details)
+        self.export_associations =
+          details.inject(self.export_associations) do |associations, (assoc_key, assoc_details)|
+            associations[assoc_key] = Exportling::Exporter::AssociationDetails.new(assoc_details)
+            associations
+          end
       end
 
       def associations

@@ -1,9 +1,7 @@
 require 'spec_helper'
 
 describe Exportling::Exporter::AssociationParams do
-  let(:association_options) { HouseExporter.associations[:rooms] }
-  let(:params)              { association_options[:params] }
-  let(:association_params)  { described_class.new(params) }
+  let(:association_params)  { HouseExporter.associations[:rooms].params }
 
   describe '#replaced_params' do
     subject { association_params.replaced_params(context_object) }
@@ -30,7 +28,8 @@ describe Exportling::Exporter::AssociationParams do
 
       context 'that does not respond to param_symbol' do
         let(:param_symbol) { :foo }
-        specify { expect{subject}.to raise_error(ArgumentError) }
+        let(:error_message) { "Export Association Error - #{context_object.class} does not respond to 'foo'" }
+        specify { expect{subject}.to raise_error(ArgumentError, error_message) }
       end
     end
   end

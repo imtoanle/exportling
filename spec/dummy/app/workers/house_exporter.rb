@@ -1,4 +1,3 @@
-# FIXME: This exporter only exports CSV files, regardless of export file type
 class HouseExporter < Exportling::Exporter
   export_field :id
   export_field :price
@@ -6,8 +5,13 @@ class HouseExporter < Exportling::Exporter
 
   query_class HouseExporterQuery
 
-  # TODO: Find way to specify additional options to pass to the exporter (e.g. the id of the current house)
-  export_association rooms: RoomExporter
+  # Need to be able to find this id on the fly in the base exporter
+  # Can probably assume/enforce that any field referenced here will be included in the export (e.g. id)
+  export_association rooms: {
+    exporter_class: RoomExporter,
+    callbacks:      { on_entry: 'on_room', on_finished: 'on_rooms_finished' },
+    params:         { room: { house_id: :id } }
+  }
 
   include CsvExporter
 end

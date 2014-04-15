@@ -1,10 +1,9 @@
 require 'spec_helper'
 
 describe Exportling::Exporter::AssociationDetails do
-  let(:association_options) { HouseExporter.associations[:rooms] }
-  let(:callback_options)    { association_options[:callbacks] }
-  let(:exporter_class)      { association_options[:exporter_class] }
-  let(:association_details) { described_class.new(association_options) }
+  let(:association_details) { HouseExporter.associations[:rooms] }
+  let(:callback_options)    { { on_entry: 'on_room', on_finished: 'on_rooms_finished' } }
+  let(:exporter_class)      { RoomExporter }
 
   describe '.initialize' do
     describe 'sets' do
@@ -20,6 +19,33 @@ describe Exportling::Exporter::AssociationDetails do
         subject { association_details.params }
         specify { expect(subject).to be_a(Exportling::Exporter::AssociationParams) }
       end
+    end
+  end
+
+  describe '#child_options' do
+    let(:context_object)     { double('House', id: 123) }
+
+    subject { association_details.child_options(context_object) }
+    specify { expect(subject).to be_a(Hash) }
+    describe ':as' do
+      subject { association_details.child_options(context_object)[:as] }
+      specify { expect(subject).to eq(:child) }
+    end
+
+    describe ':callbacks' do
+      subject { association_details.child_options(context_object)[:callbacks] }
+      specify { expect(subject).to eq(callback_options) }
+    end
+
+    describe ':params' do
+      let(:association_params) { association_details.params }
+      let(:replaced_params)    { { house_id: 123 } }
+      before do
+        allow(association_params).to receive(:replaced_params).with(context_object) { replaced_params }
+      end
+
+      subject { association_details.child_options(context_object)[:params] }
+      specify { expect(subject).to eq(replaced_params) }
     end
   end
 end

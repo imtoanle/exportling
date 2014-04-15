@@ -1,6 +1,5 @@
 module Exportling
   class Exporter::AssociationParams
-    # { house_id: :id }
     def initialize(options)
       @param_hash = options
     end
@@ -19,7 +18,7 @@ module Exportling
       if context_object.respond_to?(param_symbol)
         context_object.send(param_symbol)
       else
-        error_message = "Association Error: #{context_object.class} does not respond to #{param_symbol}"
+        error_message = "Export Association Error - #{context_object.class} does not respond to '#{param_symbol}'"
         raise ArgumentError, error_message
       end
     end

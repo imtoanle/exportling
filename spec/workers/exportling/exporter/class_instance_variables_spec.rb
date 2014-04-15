@@ -46,7 +46,9 @@ describe Exportling::Exporter::ClassInstanceVariables do
       end
 
       context 'set' do
-        specify { expect(HouseExporter.associations).to eq({ rooms: RoomExporter }) }
+        subject { HouseExporter.associations }
+        specify { expect(subject).to be_a(Hash) }
+        specify { expect(subject[:rooms]).to be_a(Exportling::Exporter::AssociationDetails) }
       end
     end
   end

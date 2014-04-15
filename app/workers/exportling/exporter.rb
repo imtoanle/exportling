@@ -38,7 +38,17 @@ module Exportling
       @export.fail! if @export
     end
 
+    # Use model from export object, and pass query params to it
+    def find_each(&block)
+      query_class.new(query_params).find_each(&block)
+    end
 
+    # Merges the export params and object params (if set)
+    def query_params
+      @export.params.tap do |search_params|
+        if @options.try(:[], :params).present?
+          search_params.deep_merge!(@options[:params])
+        end
       end
     end
 
