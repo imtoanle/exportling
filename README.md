@@ -134,7 +134,7 @@ Any params saved to the export will be passed to the query object of each export
 The params saved in the export instance have a lower precedence than those specified on the association. In the event of a conflict, the association params (below) will override the export params.
 
 ###### Static Association Params
-A less common case, the `export_association` can be used to set static params at definition time. To use the example above, we could make only ever fetching rooms with names starting with 'B' the default behaviour for this associated export.
+A less common case, the `export_association` can be used to set static params at definition time. To use the example above, we could make only ever fetching rooms with names of 'Bedroom' or 'Bathroom' the default behaviour for this associated export.
 
     class HouseCsvExporter < Exportling::Exporter
         export_association rooms: {
@@ -143,7 +143,7 @@ A less common case, the `export_association` can be used to set static params at
         }
     end
 
-Note that these params aren't particularly useful, as *every* room will be fetched for *every* house, not just the rooms for the current house. To limit the rooms to those that belong to the current house, see below.
+Note that these params aren't particularly useful, as *every* room that meets these conditions will be fetched for *every* house, not just the rooms for the current house. To limit the rooms to those that belong to the current house, see below.
 
 ###### Dynamic Association Params
 Probably the most common case, as this allows us to scope the child export to the current parent object. For example, if we want to fetch all rooms of our current house for each house entry, we would specify our association params as below.
