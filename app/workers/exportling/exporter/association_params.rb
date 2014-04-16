@@ -5,11 +5,15 @@ module Exportling
     end
 
     def replaced_params(context_object)
-      @param_hash.inject({}) do |return_hash, (param_key, param_value)|
-        return_hash[param_key] = param_value
-        if param_value.is_a?(Symbol)
-          return_hash[param_key] = replace_param(context_object, param_value)
-        end
+      @param_hash.inject({}) do |return_hash, (association_key, params)|
+        return_hash[association_key] =
+          params.inject({}) do |return_params, (param_key, param_value)|
+            return_params[param_key] = param_value
+            if param_value.is_a?(Symbol)
+              return_params[param_key] = replace_param(context_object, param_value)
+            end
+            return_params
+          end
         return_hash
       end
     end

@@ -95,15 +95,18 @@ describe Exportling::Exporter do
     let(:exporter)              { HouseExporter.new }
     let(:room_assoc)            { exporter.associations[:rooms] }
     let(:child_exporter_class)  { room_assoc.exporter_class }
+    let(:child_options)         { room_assoc.child_options(context_object) }
+    let(:room)                  { double('Room') }
 
     subject { exporter.associated_data_for(context_object) }
     before do
       exporter.instance_variable_set(:@export, export)
+      expect_any_instance_of(child_exporter_class).to receive(:perform).with(export.id, child_options)
+      allow_any_instance_of(child_exporter_class).to receive(:export_entries) { [room] }
     end
 
-    it 'instantiates the child exporter' do
-      expect(child_exporter_class).to receive(:perform).with(export.id, room_assoc.child_options(context_object))
-      subject
+    it 'returns the associated export data' do
+      expect(subject).to eq({ rooms: [room] })
     end
   end
 end

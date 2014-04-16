@@ -3,6 +3,10 @@ shared_examples :performed_export do |export_type, exporter_class|
   let(:export)          { create(:export, klass: exporter_class.to_s, status: 'created') }
   let(:options)         { {} }
 
+  # Returned by find_each
+  let(:yield1) { double('find_each_result_1', id: 1, name: :foo) }
+  let(:yield2) { double('find_each_result_2', id: 2, name: :foo) }
+
   before do
     options[:as] = :child if export_type == 'child'
   end
@@ -22,9 +26,9 @@ shared_examples :performed_export do |export_type, exporter_class|
 
     it 'calls on_entry callback once per entry' do
       allow(exporter).to receive(:associated_data_for)
-      allow(exporter).to receive(:find_each).and_yield(:foo).and_yield(:bar)
-      expect(exporter).to receive(:on_entry).with(:foo).ordered
-      expect(exporter).to receive(:on_entry).with(:bar).ordered
+      allow(exporter).to receive(:find_each).and_yield(yield1).and_yield(yield2)
+      expect(exporter).to receive(:on_entry).with(yield1, nil).ordered
+      expect(exporter).to receive(:on_entry).with(yield2, nil).ordered
       subject
     end
   end

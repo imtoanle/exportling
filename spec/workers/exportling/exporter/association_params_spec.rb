@@ -8,7 +8,7 @@ describe Exportling::Exporter::AssociationParams do
 
     context 'given an object that responds to all symbols' do
       let(:context_object)  { double('House', id: 123) }
-      let(:expected_params) { { house_id: 123 } }
+      let(:expected_params) { { room: { house_id: 123 } } }
 
       context "given a house with id, 123" do
         specify { expect(subject).to eq expected_params }

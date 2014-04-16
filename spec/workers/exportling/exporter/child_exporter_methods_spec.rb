@@ -11,6 +11,7 @@ describe Exportling::Exporter::ChildExporterMethods do
 
   describe '#perform_as_child' do
     before { exporter.instance_variable_set(:@export, export) }
+    it_should_behave_like :performed_export, 'child', RoomExporter
 
     subject { exporter.perform_as_child }
     it 'does not create a new file' do

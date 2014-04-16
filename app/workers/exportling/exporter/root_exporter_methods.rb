@@ -8,10 +8,15 @@ module Exportling
       on_start(@temp_export_file)
 
       find_each do |export_data|
-        on_entry(export_data)
         # If the object has any specified associations, fetch data from them now
-        # This needs to handle an arbitrary number of associations, arbitrarily deep.
-        associated_data_for(export_data)
+        associated_data = associated_data_for(export_data)
+
+        # save data to instance variable (has default behaviour)
+        save_entry(export_data, associated_data)
+
+        # process data (no default behaviour)
+        on_entry(export_data, associated_data)
+
       end
 
       # Attach generated file to export and flag as complete

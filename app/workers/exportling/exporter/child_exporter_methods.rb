@@ -5,8 +5,9 @@ module Exportling
       on_start
 
       find_each do |export_data|
-        on_entry(export_data)
-        associated_data_for(export_data)
+        associated_data = associated_data_for(export_data)
+        save_entry(export_data, associated_data)
+        on_entry(export_data, associated_data)
       end
 
       on_finish

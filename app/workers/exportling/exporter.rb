@@ -35,6 +35,8 @@ module Exportling
     # If there was an issue during the export process, make sure we fail the export
     # Not implemented error will be raised if the export classes haven't been set up properly
     rescue ::StandardError, ::NotImplementedError => e
+      # TODO: Log error somewhere useful (airbrake or similar?)
+      p "Export Failed! #{e.message}"
       @export.fail! if @export
     end
 
@@ -54,10 +56,25 @@ module Exportling
 
     # Takes all associations for this exporter, and requests their data
     def associated_data_for(context_object)
-      associations.each do |assoc_name, assoc_details|
-
-        assoc_details.exporter_class.perform(@export.id, assoc_details.child_options(context_object))
+      associations.inject({}) do |associated_data, (assoc_name, assoc_details)|
+        exporter = assoc_details.exporter_class.new
+        exporter.perform(@export.id, assoc_details.child_options(context_object))
+        associated_data[assoc_name] = exporter.export_entries
+        associated_data
       end
+    end
+
+    # Caches the results of each entry
+    # By default, just saves the entry in an array
+    # Often overwritten in the extending class
+    def save_entry(export_data, associated_data=nil)
+      @export_entries ||= []
+      @export_entries << export_data
+    end
+
+    # Overwritten in the extending class if we want to process all exported data before it reaches the parent
+    def export_entries
+      @export_entries
     end
 
     # Abstract Methods ================================================================
@@ -72,7 +89,7 @@ module Exportling
     end
 
     # Called for each entry of perform
-    def on_entry(export_data)
+    def on_entry(export_data, associated_data=nil)
       raise ::NotImplementedError, 'Handling of each entry (on_entry) must be performed in the extending class'
     end
   end
