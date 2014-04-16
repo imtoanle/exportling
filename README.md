@@ -108,11 +108,6 @@ The exporter class is responsible for defining the fields to be exported, the qu
       def on_finish
         @csv.close_write
       end
-      
-      # TODO: Explain
-      def on_save
-      
-      end
     end
 
 #### Associations
