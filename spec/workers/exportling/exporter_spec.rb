@@ -84,7 +84,7 @@ describe Exportling::Exporter do
 
       it 'passes merged params to the query object' do
         expect(query_class).to receive(:new).with(merged_params) { double('QueryObject', find_each: nil ) }
-        exporter.find_each{ |i| }
+        exporter.find_each { |i| }
       end
     end
   end
@@ -106,7 +106,7 @@ describe Exportling::Exporter do
     end
 
     it 'returns the associated export data' do
-      expect(subject).to eq({ rooms: [room] })
+      expect(subject).to eq(rooms: [room])
     end
   end
 end

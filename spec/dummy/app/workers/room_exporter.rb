@@ -6,16 +6,16 @@ class RoomExporter < Exportling::Exporter
 
   query_class RoomExporterQuery
 
-  def on_start(temp_file=nil)
+  def on_start(temp_file = nil)
   end
 
-  def on_entry(export_data, associated_data=nil)
+  def on_entry(export_data, associated_data = nil)
   end
 
   def on_finish
   end
 
-  def save_entry(export_data, associated_data=nil)
+  def save_entry(export_data, associated_data = nil)
     @export_entries ||= []
     @export_entries << export_data.name
   end

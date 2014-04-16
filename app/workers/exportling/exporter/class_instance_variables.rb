@@ -42,9 +42,9 @@ module Exportling
         export_associations || {}
       end
 
-      def query_class(klass=nil)
+      def query_class(klass = nil)
         self.query = klass unless klass.nil?
-        self.query
+        query
       end
     end
   end

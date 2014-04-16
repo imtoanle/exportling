@@ -12,12 +12,12 @@ module Exportling
 
     # Worker Methods ============================================================
     # Shortcut to instance peform method
-    def self.perform(export_id, options={})
+    def self.perform(export_id, options = {})
       new.perform(export_id, options)
     end
 
     # Allow options { as: :child } to be passed, which will not create any files, or flag the export as complete
-    def perform(export_id, options={})
+    def perform(export_id, options = {})
       @export  = Exportling::Export.find(export_id)
       @options = options
       @child   = options[:as] == :child
@@ -67,7 +67,7 @@ module Exportling
     # Caches the results of each entry
     # By default, just saves the entry in an array
     # Often overwritten in the extending class
-    def save_entry(export_data, associated_data=nil)
+    def save_entry(export_data, associated_data = nil)
       @export_entries ||= []
       @export_entries << export_data
     end
@@ -80,7 +80,7 @@ module Exportling
     # Abstract Methods ================================================================
     # The temp file is an instance variable, so accepting it as an argument isn't really needed
     # However, requiring it to be accepted as a param by on_start helps enforce its use by extending classes
-    def on_start(temp_file=nil)
+    def on_start(temp_file = nil)
       raise ::NotImplementedError, 'on_start must be implemented in the extending class'
     end
 
@@ -89,7 +89,7 @@ module Exportling
     end
 
     # Called for each entry of perform
-    def on_entry(export_data, associated_data=nil)
+    def on_entry(export_data, associated_data = nil)
       raise ::NotImplementedError, 'Handling of each entry (on_entry) must be performed in the extending class'
     end
   end

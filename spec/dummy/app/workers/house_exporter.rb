@@ -16,7 +16,7 @@ class HouseExporter < Exportling::Exporter
     @csv << (field_names + ['room_names'])
   end
 
-  def on_entry(export_data, associated_data=nil)
+  def on_entry(export_data, associated_data = nil)
     # Data from this house
     row_data = export_data.attributes.values_at(*field_names)
     # Data from child rooms of this house (just collate names)

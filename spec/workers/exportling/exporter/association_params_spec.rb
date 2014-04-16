@@ -10,7 +10,7 @@ describe Exportling::Exporter::AssociationParams do
       let(:context_object)  { double('House', id: 123) }
       let(:expected_params) { { room: { house_id: 123 } } }
 
-      context "given a house with id, 123" do
+      context 'given a house with id, 123' do
         specify { expect(subject).to eq expected_params }
       end
     end
@@ -29,7 +29,7 @@ describe Exportling::Exporter::AssociationParams do
       context 'that does not respond to param_symbol' do
         let(:param_symbol) { :foo }
         let(:error_message) { "Export Association Error - #{context_object.class} does not respond to 'foo'" }
-        specify { expect{subject}.to raise_error(ArgumentError, error_message) }
+        specify { expect { subject }.to raise_error(ArgumentError, error_message) }
       end
     end
   end

@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Exportling::Exporter::ClassInstanceVariables do
   describe 'delegations' do
-    subject{ Exportling::Exporter.new }
+    subject { Exportling::Exporter.new }
     it { should delegate(:fields).to(:class) }
     it { should delegate(:field_names).to(:class) }
     it { should delegate(:query_class).to(:class) }

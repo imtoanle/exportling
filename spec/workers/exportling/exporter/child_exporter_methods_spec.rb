@@ -6,7 +6,6 @@ describe Exportling::Exporter::ChildExporterMethods do
   let(:exporter)        { exporter_class.new }
   let(:export)          { create(:export, klass: exporter_class.to_s, status: 'created') }
 
-
   it_should_behave_like :performed_export, 'child', RoomExporter
 
   describe '#perform_as_child' do

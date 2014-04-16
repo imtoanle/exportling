@@ -45,7 +45,7 @@ describe Exportling::Exporter::RootExporterMethods do
     describe 'export status' do
       context 'when successful' do
         specify do
-          expect{subject}.to change{export.reload.status}.to('completed')
+          expect { subject }.to change { export.reload.status }.to('completed')
         end
       end
 
