@@ -39,7 +39,7 @@ shared_examples :performed_export do |export_type, exporter_class|
     before { allow(exporter).to receive(perform_method).and_raise(StandardError) }
 
     specify do
-      expect { subject }.to change{export.reload.status}.to('failed')
+      expect { subject }.to change { export.reload.status }.to('failed')
     end
   end
 end
