@@ -7,21 +7,21 @@ class RoomExporter < Exportling::Exporter
   query_class RoomExporterQuery
 
   def on_start(temp_file=nil)
-    # byebug
-    # Maybe write data to passed file (if present)
   end
 
-  def on_entry
-    # byebug
-    # Maybe pass result back to parent (e.g. could specify that parent has callback specified on_room_entry)
-    # Or cache results
-    # Or write to file
+  def on_entry(export_data, associated_data=nil)
   end
 
   def on_finish
-    # byebug
-    # Either pass cached results back to parent
-    # Or notify parent that results are done for this association
-    # Or Flush file buffer
+  end
+
+  def save_entry(export_data, associated_data=nil)
+    @export_entries ||= []
+    @export_entries << export_data.name
+  end
+
+  # Join the room names before sending them back to the parent house exporter
+  def export_entries
+    @export_entries.join('|') if @export_entries.present?
   end
 end

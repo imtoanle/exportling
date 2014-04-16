@@ -5,13 +5,27 @@ class HouseExporter < Exportling::Exporter
 
   query_class HouseExporterQuery
 
-  # Need to be able to find this id on the fly in the base exporter
-  # Can probably assume/enforce that any field referenced here will be included in the export (e.g. id)
   export_association rooms: {
     exporter_class: RoomExporter,
     callbacks:      { on_entry: 'on_room', on_finished: 'on_rooms_finished' },
     params:         { room: { house_id: :id } }
   }
 
-  include CsvExporter
+  def on_start(temp_file)
+    @csv = CSV.open(temp_file, 'wb')
+    @csv << (field_names + ['room_names'])
+  end
+
+  def on_entry(export_data, associated_data=nil)
+    # Data from this house
+    row_data = export_data.attributes.values_at(*field_names)
+    # Data from child rooms of this house (just collate names)
+    row_data << associated_data[:rooms] unless associated_data.nil?
+    # Write to file
+    @csv << row_data
+  end
+
+  def on_finish
+    @csv.close_write
+  end
 end
