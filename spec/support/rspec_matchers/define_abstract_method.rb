@@ -16,6 +16,12 @@ RSpec::Matchers.define :define_abstract_method do |method_name|
   def raise_not_implemented?(klass, method_name)
     arg_count = klass.instance_method(method_name).arity
 
+    # Handle optional args
+    if arg_count < 0
+      # Change arg_count to number of *required* args
+      arg_count = (arg_count + 1).abs
+    end
+
     if arg_count > 0
       klass.new.send(method_name, *Array.new(arg_count))
     else
