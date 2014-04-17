@@ -5,7 +5,7 @@ describe Exportling::Exporter::ClassInstanceVariables do
     subject { Exportling::Exporter.new }
     it { should delegate(:fields).to(:class) }
     it { should delegate(:field_names).to(:class) }
-    it { should delegate(:query_class).to(:class) }
+    it { should delegate(:query_class_name).to(:class) }
     it { should delegate(:associations).to(:class) }
   end
 
@@ -32,11 +32,11 @@ describe Exportling::Exporter::ClassInstanceVariables do
 
     describe '.query_class' do
       context 'not set' do
-        specify { expect(Exportling::Exporter.query_class).to be_nil }
+        specify { expect(Exportling::Exporter.query_class_name).to be_nil }
       end
 
       context 'set in extending class' do
-        specify { expect(HouseExporter.query_class).to eq HouseExporterQuery }
+        specify { expect(HouseExporter.query_class_name).to eq 'HouseExporterQuery' }
       end
     end
 

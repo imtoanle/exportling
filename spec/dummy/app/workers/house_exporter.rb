@@ -3,7 +3,7 @@ class HouseExporter < Exportling::Exporter
   export_field :price
   export_field :square_meters
 
-  query_class HouseExporterQuery
+  query_class_name 'HouseExporterQuery'
 
   export_association rooms: {
     exporter_class: RoomExporter,

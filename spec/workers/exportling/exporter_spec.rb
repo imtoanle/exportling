@@ -58,8 +58,9 @@ describe Exportling::Exporter do
   end
 
   describe '#find_each' do
-    let(:exporter)     { HouseExporter.new }
-    let(:query_class) { exporter.query_class }
+    let(:exporter)          { HouseExporter.new }
+    let(:query_class_name)  { exporter.query_class_name }
+    let(:query_class)       { query_class_name.constantize }
 
     before { exporter.instance_variable_set(:@export, double('export', params: {})) }
 
@@ -75,7 +76,7 @@ describe Exportling::Exporter do
       let(:exporter_class)  { RoomExporter }
       let(:exporter)        { exporter_class.new }
       let(:export)          { create(:export, klass: exporter_class.to_s, params: export_params) }
-      let(:query_class)     { exporter.query_class }
+      let(:query_class)     { exporter.query_class_name.constantize }
 
       before do
         exporter.instance_variable_set(:@export, export)

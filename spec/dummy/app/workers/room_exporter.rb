@@ -4,7 +4,7 @@ class RoomExporter < Exportling::Exporter
   export_field :name
   export_field :house_id
 
-  query_class RoomExporterQuery
+  query_class_name 'RoomExporterQuery'
 
   def on_start(temp_file = nil)
   end
