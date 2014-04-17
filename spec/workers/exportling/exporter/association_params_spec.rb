@@ -17,7 +17,7 @@ describe Exportling::Exporter::AssociationParams do
   end
 
   describe '#replace_param' do
-    subject { association_params.replace_param(context_object, param_symbol) }
+    subject { association_params.replace_param_symbol(context_object, param_symbol) }
     context 'given a context object' do
       let(:context_object) { double('House', id: 123) }
 
