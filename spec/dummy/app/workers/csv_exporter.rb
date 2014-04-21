@@ -10,7 +10,7 @@ module CsvExporter
     end
 
     # Called for each entry of parent perform
-    def on_entry(export_data)
+    def on_entry(export_data, associated_data)
       @csv << export_data.attributes.values_at(*field_names)
     end
 

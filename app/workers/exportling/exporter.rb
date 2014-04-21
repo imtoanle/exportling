@@ -6,93 +6,81 @@ module Exportling
     include Sidekiq::Worker
     sidekiq_options queue: 'exportling_exports'
 
-    class << self
-      attr_accessor :export_fields
-      attr_accessor :query
+    # export_entries is the default storage place of export data
+    # Upon triggering a child export, the parent export calls export_entries to fetch the child data
+    attr_accessor :export_entries
 
-      # This will allow the extending class to specify fields as:
-      # export_field :field_name
-      def export_field(name)
-        self.export_fields ||= []
-        self.export_fields << name
-      end
-
-      def fields
-        export_fields || []
-      end
-
-      def query_class(klass=nil)
-        self.query = klass unless klass.nil?
-        self.query
-      end
-    end
-
-    # Access to class instance variables =============================
-    def fields
-      self.class.fields
-    end
-
-    def field_names
-      @field_names ||= fields.map(&:to_s)
-    end
-
-    def query_class
-      self.class.query_class
-    end
+    include ClassInstanceVariables
+    include RootExporterMethods
+    include ChildExporterMethods
 
     # Worker Methods ============================================================
     # Shortcut to instance peform method
-    def self.perform(export_id)
-      new.perform(export_id)
+    def self.perform(export_id, options = {})
+      new.perform(export_id, options)
     end
 
-    def perform(export_id)
-      @export = Exportling::Export.find(export_id)
+    # Allow options { as: :child } to be passed, which will not create any files, or flag the export as complete
+    def perform(export_id, options = {})
+      @export  = Exportling::Export.find(export_id)
+      @options = options
+      @child   = options[:as] == :child
 
       # Don't perform export more than once (idempotence)
       return if @export.completed?
 
-      @temp_export_file = Tempfile.new('export')
-      on_start(@temp_export_file)
-
-      find_each do |export_data|
-        on_entry(export_data)
+      # Run the rest of the export as if we are a root or child exporter, depending on perform arguments
+      if @child
+        perform_as_child
+      else
+        perform_as_root
       end
 
-      finish_export
-
-      # If there was an issue during the export process, make sure we fail the export
-      # Not implemented error will be raised if the export classes haven't been set up properly
+    # If there was an issue during the export process, make sure we fail the export
+    # Not implemented error will be raised if the export classes haven't been set up properly
     rescue ::StandardError, ::NotImplementedError => e
-      @export.fail!
-    ensure
-      @temp_export_file.unlink unless @temp_export_file.nil?
-      @temp_export_file = nil
-    end
-
-    # Calls the on_finish callback and attaches the generated file to the model
-    # Finally, flags the export as complete
-    def finish_export
-      on_finish
-
-      # Save the generated file against the export object
-      @export.transaction do
-        @export.output = @temp_export_file
-        @export.save!
-        @export.complete!
-      end
+      # TODO: Log error somewhere useful (airbrake/newrelic or similar?)
+      p "Export Failed! #{e.message}"
+      @export.fail! if @export
     end
 
     # Use model from export object, and pass query params to it
     def find_each(&block)
-      query_class.new(@export.params).find_each(&block)
+      query_class_name.constantize.new(query_params).find_each(&block)
+    end
+
+    # Merges the export params and object params (if set)
+    def query_params
+      @export.params.tap do |search_params|
+        if @options.try(:[], :params).present?
+          search_params.deep_merge!(@options[:params])
+        end
+      end
+    end
+
+    # Takes all associations for this exporter, and requests their data
+    def associated_data_for(context_object)
+      associations.inject({}) do |associated_data, (assoc_name, assoc_details)|
+        exporter = assoc_details.exporter_class.new
+        exporter.perform(@export.id, assoc_details.child_options(context_object))
+        associated_data[assoc_name] = exporter.export_entries
+        associated_data
+      end
+    end
+
+    # Caches the results of each entry
+    # By default, just saves the entry in an array
+    # Often overwritten in the extending class
+    def save_entry(export_data, associated_data = nil)
+      @export_entries ||= []
+      @export_entries << export_data
     end
 
     # Abstract Methods ================================================================
     # The temp file is an instance variable, so accepting it as an argument isn't really needed
     # However, requiring it to be accepted as a param by on_start helps enforce its use by extending classes
-    def on_start(temp_file)
-      raise ::NotImplementedError, 'on_start must be implemented in the extending class, and must accept a file'
+    def on_start(temp_file = nil)
+      raise ::NotImplementedError, 'on_start must be implemented in the extending class'
     end
 
     def on_finish
@@ -100,7 +88,7 @@ module Exportling
     end
 
     # Called for each entry of perform
-    def on_entry(export_data)
+    def on_entry(export_data, associated_data = nil)
       raise ::NotImplementedError, 'Handling of each entry (on_entry) must be performed in the extending class'
     end
   end
