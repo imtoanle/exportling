@@ -87,7 +87,8 @@ The exporter class is responsible for defining the fields to be exported, the qu
       export_field :square_meters
 
       # Specify the query object that should be used to retrieve the model data
-      query_class HouseExporterQuery
+      query_class_name 'HouseExporterQuery'
+      
 
       # Called at the start of parent perform
       # Open a new csv file, and add field headers
@@ -190,7 +191,7 @@ Creating the most basic room exporter will allow us to create the CSV we want by
       export_field :name
       export_field :house_id
 
-      query_class RoomExporterQuery
+      query_class_name 'RoomExporterQuery'
 
       def on_start(temp_file=nil)
       end
@@ -270,7 +271,7 @@ Define this exporter as the most basic possible
       export_field :name
       export_field :house_id
 
-      query_class RoomExporterQuery
+      query_class_name 'RoomExporterQuery'
 
       def on_start(temp_file=nil)
       end
