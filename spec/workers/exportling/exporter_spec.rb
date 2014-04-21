@@ -104,4 +104,23 @@ describe Exportling::Exporter do
       expect(subject).to eq(rooms: [room])
     end
   end
+
+  describe '#save_entry' do
+    let(:exporter) { HouseExporter.new }
+    let(:entry)    { double('Export Data') }
+
+    subject { exporter.save_entry(entry) }
+
+    describe 'default behaviour' do
+      it 'inits @default_entries' do
+        subject
+        expect(exporter.instance_variable_get(:@export_entries)).to be_a(Array)
+      end
+
+      it 'saves the entry to @default_entries' do
+        subject
+        expect(exporter.instance_variable_get(:@export_entries)).to include(entry)
+      end
+    end
+  end
 end
