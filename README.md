@@ -60,21 +60,21 @@ Exportling currently allows a developer to specify a simple nested exports. Expo
 To export a model, you will need to define two classes
 
 ### Query
-The query object is used to pull the model information from the database. This should look like the following:
+The query object is used to pull the model information from the database. This object must accept query options when initialized, and must have a `find_each` method that accepts a block.
 
-    class HouseExporterQuery < Exportling::ExporterQuery
-      # Need to define this to set the default relation. The exporter does not pass a relation to the query, so the constructor should define it by default
-      def initialize(options, relation = House.all)
+    class HouseExporterQuery
+      def initialize(options)
         @options  = options
-        @relation = relation
       end
 
-      # query_options will be passed to a find_each, so should match whatever the `export's` params are for this model.
-      # e.g. If @export.params => { house: { furnished: false } }, you want to return the value of the :house key.
-      def query_options
-        @options.try(:[], :house)
+      def find_each(&block)
+        query_options = @options[:house]
+        if query_options.present?
+          House.where(@options[:house]).find_each(&block)
+        end
       end
     end
+
 
 
 ### Exporter

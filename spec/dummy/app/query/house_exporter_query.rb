@@ -1,12 +1,13 @@
 # Query object for the house exporter
-class HouseExporterQuery < Exportling::ExporterQuery
-  def initialize(options, relation = House.all)
+class HouseExporterQuery
+  def initialize(options)
     @options  = options
-    @relation = relation
   end
 
-  # Which of the provided params do we use to find the appropriate records
-  def query_options
-    @options.try(:[], :house)
+  def find_each(&block)
+    query_options = @options[:house]
+    if query_options.present?
+      House.where(@options[:house]).find_each(&block)
+    end
   end
 end

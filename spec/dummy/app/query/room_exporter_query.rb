@@ -1,13 +1,14 @@
 # Query object for the room exporter
-class RoomExporterQuery < Exportling::ExporterQuery
+class RoomExporterQuery
   # When this query object is initialised by the house exporter, it may pass a scoped relation
-  def initialize(options, relation = Room.all)
+  def initialize(options)
     @options  = options
-    @relation = relation
   end
 
-  # Which of the provided params do we use to find the appropriate records
-  def query_options
-    @options.try(:[], :room)
+  def find_each(&block)
+    query_options = @options[:room]
+    if query_options.present?
+      Room.where(query_options).find_each(&block)
+    end
   end
 end
