@@ -6,6 +6,10 @@ module Exportling
     include Sidekiq::Worker
     sidekiq_options queue: 'exportling_exports'
 
+    # export_entries is the default storage place of export data
+    # Upon triggering a child export, the parent export calls export_entries to fetch the child data
+    attr_accessor :export_entries
+
     include ClassInstanceVariables
     include RootExporterMethods
     include ChildExporterMethods
@@ -35,7 +39,7 @@ module Exportling
     # If there was an issue during the export process, make sure we fail the export
     # Not implemented error will be raised if the export classes haven't been set up properly
     rescue ::StandardError, ::NotImplementedError => e
-      # TODO: Log error somewhere useful (airbrake or similar?)
+      # TODO: Log error somewhere useful (airbrake/newrelic or similar?)
       p "Export Failed! #{e.message}"
       @export.fail! if @export
     end
@@ -70,11 +74,6 @@ module Exportling
     def save_entry(export_data, associated_data = nil)
       @export_entries ||= []
       @export_entries << export_data
-    end
-
-    # Overwritten in the extending class if we want to process all exported data before it reaches the parent
-    def export_entries
-      @export_entries
     end
 
     # Abstract Methods ================================================================

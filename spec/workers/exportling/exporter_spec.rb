@@ -20,11 +20,11 @@ describe Exportling::Exporter do
     let(:exporter_class)  { HouseExporter }
     let(:exporter)        { exporter_class.new }
     let(:export)          { create(:export, klass: exporter_class.to_s, status: 'created') }
-    let(:options)         { {} }
 
     subject { exporter.perform(export.id, options) }
 
     context 'export already completed' do
+      let(:options) { {} }
       before { export.complete! }
 
       it 'does nothing' do
@@ -37,6 +37,7 @@ describe Exportling::Exporter do
 
     context 'export not completed' do
       context 'for root export' do
+        let(:options) { {} }
         it 'performs the export as a root exporter' do
           expect(exporter).to receive(:perform_as_root)
           subject
@@ -45,14 +46,12 @@ describe Exportling::Exporter do
 
       context 'with options' do
         context 'for child export' do
-          before { options[:as] = :child }
+          let(:options) { { as: :child } }
           it 'peforms the export as a child exporter' do
             expect(exporter).to receive(:perform_as_child)
             subject
           end
         end
-
-
       end
     end
   end
@@ -78,14 +77,9 @@ describe Exportling::Exporter do
       let(:export)          { create(:export, klass: exporter_class.to_s, params: export_params) }
       let(:query_class)     { exporter.query_class_name.constantize }
 
-      before do
-        exporter.instance_variable_set(:@export, export)
-        exporter.instance_variable_set(:@options, options)
-      end
-
       it 'passes merged params to the query object' do
         expect(query_class).to receive(:new).with(merged_params) { double('QueryObject', find_each: nil ) }
-        exporter.find_each { |i| }
+        exporter.perform(export.id, options)
       end
     end
   end
