@@ -1,3 +1,4 @@
+# This migration comes from exportling (originally 20140224031757)
 class CreateExport < ActiveRecord::Migration
   def change
     create_table :exportling_exports do |t|

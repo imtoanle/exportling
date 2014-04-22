@@ -11,7 +11,6 @@ class Exportling::ExportsController < Exportling::ApplicationController
   def new
     # TODO: security
     @export = Exportling::Export.new(klass: params[:klass],
-                                     method: params[:method],
                                      owner_id: params[:owner_id],
                                      params: params[:params],
                                      file_type: params[:file_type])
@@ -50,7 +49,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
 
   def export_params
     params.require(:export).permit(
-      :klass, :method, :file_type
+      :klass, :file_type
     )
   end
 end
