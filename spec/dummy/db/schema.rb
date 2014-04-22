@@ -11,12 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140414012636) do
+ActiveRecord::Schema.define(version: 20140422013216) do
 
   create_table "exportling_exports", force: true do |t|
     t.integer  "owner_id"
     t.string   "klass",                          null: false
-    t.string   "method",                         null: false
     t.string   "status",     default: "created", null: false
     t.string   "file_type",                      null: false
     t.string   "output"
