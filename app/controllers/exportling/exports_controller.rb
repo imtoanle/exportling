@@ -1,5 +1,9 @@
 # TODO: Ensure all exports scoped to owner
 class Exportling::ExportsController < Exportling::ApplicationController
+
+  # FIXME: Needed to get things working in AVETARS for now. Need to handle authentication better, by defering all to the main application
+  skip_authorization_check
+
   decorates_assigned :export
 
   def index
