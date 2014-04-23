@@ -70,15 +70,15 @@ The query object is used to pull the model information from the database. This o
       def find_each(&block)
         query_options = @options[:house]
         if query_options.present?
-          House.where(@options[:house]).find_each(&block)
+          House.where(query_options).find_each(&block)
         end
       end
     end
 
-
+You can see more examples of exporter query objects in the source, under `spec/dummy/app/query`.
 
 ### Exporter
-The exporter class is responsible for defining the fields to be exported, the query object to fetch the data, and the handling of the actual data export. When the export starts, the `on_start` method is called. Similarly, the `on_finish` method is called at the end of the export. Finally, for each item found, `on_entry` is called, with the model and associated data passed as an argument.
+The exporter class is responsible for defining the fields to be exported, the query object to fetch the data, and the handling of the actual data export. When the export starts, the `on_start` method is called, and is passed a TempFile to write to. Similarly, the `on_finish` method is called at the end of the export. Finally, for each item found, `on_entry` is called, with the model and associated data passed as an argument.
 
     class HouseCsvExporter < Exportling::Exporter
       # Specify the fields we want in the final export
@@ -92,9 +92,8 @@ The exporter class is responsible for defining the fields to be exported, the qu
 
       # Called at the start of parent perform
       # Open a new csv file, and add field headers
-      def on_start
-        csv_file_name = "#{Rails.root}/tmp/exports/#{@export.file_name}"
-        @csv = CSV.open(csv_file_name, 'wb')
+      def on_start(temp_file_name)
+        @csv = CSV.open(temp_file_name, 'wb')
         @csv << field_names
       end
 
@@ -157,7 +156,7 @@ The entry is whatever is passed back from the query object of the current export
 
 
 #### Example Exports
-##### Concatinated Child Data
+##### Concatenated Child Data
 
 If we have a `House` that `has_many :rooms`, and we wish to create a CSV export that lists each house, with a pipe delimited list of room names for each house entry, we have a couple of ways we can achieve this.
 
@@ -171,15 +170,16 @@ Common to both approaches is the requirement that we define the room association
 
 Finally, to actually fetch the room data, we need to create exporter and query objects for `Room`. The query object will be the same, regardless of exporter created, and will be defined as shown.
 
-    class RoomExporterQuery < Exportling::ExporterQuery
-      def initialize(options, relation = Room.all)
+    class RoomExporterQuery
+      def initialize(options)
         @options  = options
-        @relation = relation
       end
 
-      # Which of the provided params do we use to find the appropriate records
-      def query_options
-        @options.try(:[], :room)
+      def find_each(&block)
+        query_options = @options[:room]
+        if query_options.present?
+          Room.where(query_options).find_each(&block)
+        end
       end
     end
 
@@ -203,7 +203,7 @@ Creating the most basic room exporter will allow us to create the CSV we want by
       end
     end
 
-If this exporter is used on its own, it will not write anything to an export file, as none of its callback methods are actually processing the data. However, its default behaviour means it will at least store all found entries in an accessable instance variable.
+If this exporter is used on its own, it will not write anything to an export file, as none of its callback methods are actually processing the data. However, its default behaviour means it will at least store all found entries in an accessible instance variable.
 
 The default exporter behaviour saves each entry in the exporter's `export_entries` instance variable. Because the `HouseCsvExporter` has defined this as an association, `export_entries` will be passed to the house exporter's `on_entry` method as the second argument. To create the example csv line described above, the `HouseCsvExporter` needs to change its `on_entry` method to the following:
     
@@ -332,10 +332,22 @@ To allow the user to request an export, you need to create a form to send export
       <%= hidden_field_tag 'params[house][id]', [house.id] %>
       <!-- NOTE: File Type is not currently used by the exporter, and will probably be removed (required for now) -->
       <%= hidden_field_tag :file_type, 'csv' %>
-      <!-- NOTE: Method is not currently used by the exporter, and will probably be removed (required for now) -->
-      <%= hidden_field_tag :method, 'TODO' %>
       <%= submit_tag 'Export CSV' %>
     <% end -%>
+
+## Commonly Useful Methods
+### Exporter
+The following methods all exist as both instance and class methods
+#### fields
+Returns the array of field symbols specified in the exporter with `export_field`.
+#### field_names
+Like `fields`, but returns the names as strings.
+#### query_class_name
+The name of the query class for this exporter.
+#### associations
+Returns all associations specified in the exporter with `export_association`.
+#### perform
+Runs the export, creating an export file. Accepts `export_id` and `options`, where `options` contains whether the export is running as a child (`{ as: :child }`), and often contains additional query parameters (`{ params: { house_id: 123 } }`).
 
 ## Contributing
 
