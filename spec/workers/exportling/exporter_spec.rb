@@ -88,7 +88,7 @@ describe Exportling::Exporter do
     let(:export)                { create(:export, params: export_params) }
     let(:exporter)              { HouseExporter.new }
 
-    before  { exporter.perform(export, { params: options_params }) }
+    before  { exporter.perform(export, params: options_params) }
     subject { exporter.query_params }
     context 'export.params empty' do
       let(:export_params) { {} }
@@ -119,14 +119,14 @@ describe Exportling::Exporter do
         context 'without param collisions' do
           let(:options_params) { { foo: { id: 123 } } }
           it 'merges params from both' do
-            expect(subject).to eq({ foo: { id: 123, bar: :baz } })
+            expect(subject).to eq(foo: { id: 123, bar: :baz })
           end
         end
 
         context 'with param collisions' do
           let(:options_params) { { foo: { bar: :qux } } }
           it 'gives options[:params] precidence' do
-            expect(subject).to eq({ foo: { bar: :qux } })
+            expect(subject).to eq(foo: { bar: :qux })
           end
         end
       end
