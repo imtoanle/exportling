@@ -39,8 +39,9 @@ module Exportling
     # If there was an issue during the export process, make sure we fail the export
     # Not implemented error will be raised if the export classes haven't been set up properly
     rescue ::StandardError, ::NotImplementedError => e
-      # TODO: Log error somewhere useful (airbrake/newrelic or similar?)
+      # TODO: Log error somewhere useful (Allow main app to specify logging mechanism)
       p "Export Failed! #{e.message}"
+      p e.backtrace
       @export.fail! if @export
     end
 
@@ -51,8 +52,12 @@ module Exportling
 
     # Merges the export params and object params (if set)
     def query_params
-      @export.params.tap do |search_params|
-        if @options.try(:[], :params).present?
+      params_from_options = @options.try(:[], :params)
+      params_from_export  = @export.params || {}
+      return {} if params_from_export.blank? && params_from_options.blank?
+
+      params_from_export.tap do |search_params|
+        if params_from_options.present?
           search_params.deep_merge!(@options[:params])
         end
       end

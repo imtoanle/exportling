@@ -84,6 +84,55 @@ describe Exportling::Exporter do
     end
   end
 
+  describe '#query_params' do
+    let(:export)                { create(:export, params: export_params) }
+    let(:exporter)              { HouseExporter.new }
+
+    before  { exporter.perform(export, params: options_params) }
+    subject { exporter.query_params }
+    context 'export.params empty' do
+      let(:export_params) { {} }
+      context 'options[:params] empty' do
+        let(:options_params) { {} }
+        specify { expect(subject).to eq({}) }
+      end
+
+      context 'options[:params] populated' do
+        let(:options_params) { { foo: { id: 123 } } }
+        it 'returns options[:params]' do
+          expect(subject).to eq(options_params)
+        end
+      end
+    end
+
+    context 'export.params populated' do
+      let(:export_params) { { foo: { bar: :baz } } }
+
+      context 'options[:params] empty' do
+        let(:options_params) { {} }
+        it 'returns export.params' do
+          expect(subject).to eq(export_params)
+        end
+      end
+
+      context 'options[:params] populated' do
+        context 'without param collisions' do
+          let(:options_params) { { foo: { id: 123 } } }
+          it 'merges params from both' do
+            expect(subject).to eq(foo: { id: 123, bar: :baz })
+          end
+        end
+
+        context 'with param collisions' do
+          let(:options_params) { { foo: { bar: :qux } } }
+          it 'gives options[:params] precidence' do
+            expect(subject).to eq(foo: { bar: :qux })
+          end
+        end
+      end
+    end
+  end
+
   describe '#associated_data_for' do
     let(:context_object)        { double('house', id: 123) }
     let(:export)                { create(:export, params: { house: { id: context_object.id } }) }
