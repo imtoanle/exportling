@@ -1,36 +1,28 @@
 # TODO: Ensure all exports scoped to owner
 class Exportling::ExportsController < Exportling::ApplicationController
 
-  # FIXME: Needed to get things working in AVETARS for now. Need to handle authentication better, by defering all to the main application
-  skip_authorization_check
-
   decorates_assigned :export
 
   def index
-    # TODO: Limit exports to those associated with current owner
-    # @exports = Exportling::Export.where(owner: params[:owner_id])
-    @exports = Exportling::ExportDecorator.decorate_collection(Exportling::Export.all)
+    exports = Exportling::Export.where(owner_id: current_export_owner.id)
+    @exports = Exportling::ExportDecorator.decorate_collection(exports)
   end
 
   def new
-    # TODO: security
     @export = Exportling::Export.new(klass: params[:klass],
-                                     owner_id: params[:owner_id],
+                                     owner_id: current_export_owner.id,
                                      params: params[:params],
                                      file_type: params[:file_type])
   end
 
   def create
-    # TODO: security
     @export = Exportling::Export.new(export_params)
 
     # Hashes are not permitted by strong parameters, so we need to pull the params out separately
     # See: https://github.com/rails/strong_parameters#permitted-scalar-values
     @export.params = params[:export][:params]
 
-    # TODO: Major sercurity
-    # We Need to allow main application to specify owner in control action, rather than just supplying it in the form
-    @export.owner = Exportling.export_owner_class.find(params[:export][:owner_id])
+    @export.owner = current_export_owner
 
     # TODO: Some kind of error handling
     if @export.valid?
@@ -45,8 +37,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
   end
 
   def download
-    # TODO: security
-    @export = Exportling::Export.find(params[:id])
+    @export = Exportling::Export.find_by(id: params[:id], owner_id: current_export_owner.id)
 
     send_file @export.output.path, disposition: 'attachment', x_sendfile: true, filename: @export.file_name
   end
