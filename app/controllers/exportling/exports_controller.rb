@@ -53,7 +53,12 @@ class Exportling::ExportsController < Exportling::ApplicationController
       flash[:error] = I18n.t('exportling.export.download.incomplete')
       redirect_to root_path
     else
-      send_file @export.output.path, disposition: 'attachment', x_sendfile: true, filename: @export.file_name
+      send_file_options = {
+        disposition:  'attachment',
+        x_sendfile:   true,
+        filename:     @export.file_name
+      }
+      send_file @export.output.path, send_file_options
     end
   end
 

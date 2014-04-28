@@ -9,6 +9,6 @@ class Exportling::ApplicationController < ApplicationController
 
   # prepended with underscore to reduce likelihood of naming conflicts
   def _current_export_owner
-    self.send(Exportling.export_owner_method)
+    send(Exportling.export_owner_method)
   end
 end

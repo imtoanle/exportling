@@ -26,7 +26,9 @@ describe Exportling::Exporter::ClassInstanceVariables do
       end
 
       context 'fields have been set in the extending class' do
-        specify { expect(HouseCsvExporter.field_names).to match_array ['id', 'price', 'square_meters'] }
+        it 'returns the field names as strings' do
+          expect(HouseCsvExporter.field_names).to match_array ['id', 'price', 'square_meters']
+        end
       end
     end
 

@@ -17,10 +17,10 @@ describe Exportling::ExportDecorator do
         export.klass     = nil
         export.file_type = nil
       end
-      let(:expected_message) {
+      let(:expected_message) do
         'Please ensure the export form supplies all required attributes.'\
         " Klass can't be blank. File type can't be blank."
-      }
+      end
 
       specify { expect(subject).to eq(expected_message) }
     end

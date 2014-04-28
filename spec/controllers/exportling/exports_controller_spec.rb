@@ -18,7 +18,7 @@ describe Exportling::ExportsController do
   describe 'GET #index' do
     before { get :index }
 
-    it "renders the :index view" do
+    it 'renders the :index view' do
       expect(response).to render_template(:index)
     end
 
@@ -45,7 +45,11 @@ describe Exportling::ExportsController do
     let(:p_klass)             { nil }
     let(:p_file_type)         { nil }
     let(:mock_error_message)  { 'Export Invalid' }
-    before { expect_any_instance_of(Exportling::Export).to receive(:invalid_atributes_message) { mock_error_message } }
+
+    before do
+      expect_export = expect_any_instance_of(Exportling::Export)
+      expect_export.to receive(:invalid_atributes_message) { mock_error_message }
+    end
   end
 
   describe 'GET #new' do
@@ -70,7 +74,7 @@ describe Exportling::ExportsController do
     context 'given invalid params' do
       include_context :invalid_export_params
       it 'raises an error' do
-        expect{ get :new, params }.to raise_error(ArgumentError, mock_error_message)
+        expect { get :new, params }.to raise_error(ArgumentError, mock_error_message)
       end
     end
   end
@@ -78,7 +82,6 @@ describe Exportling::ExportsController do
   describe 'POST #create' do
     let(:params) { { klass: p_klass, params: p_params, file_type: p_file_type } }
     let(:p_params)    { { 'foo' => 'bar' } }
-
 
     context 'given valid params' do
       before do
@@ -111,7 +114,7 @@ describe Exportling::ExportsController do
     context 'given invalid params' do
       include_context :invalid_export_params
       it 'raises an error' do
-        expect{ post :create, export: params }.to raise_error(ArgumentError, mock_error_message)
+        expect { post :create, export: params }.to raise_error(ArgumentError, mock_error_message)
       end
     end
   end
@@ -144,17 +147,17 @@ describe Exportling::ExportsController do
 
           it 'downloads the export' do
             file_name = export.file_name
-            expect(response.content_type).to eq("text/csv")
-            expect(response.headers["Content-Disposition"]).to eq("attachment; filename=\"#{file_name}\"")
+            expect(response.content_type).to eq('text/csv')
+            expect(response.headers['Content-Disposition']).to eq("attachment; filename=\"#{file_name}\"")
           end
         end
 
         context 'export not yet performed' do
           before { get :download, id: export.id }
-          let(:expected_error_message) {
+          let(:expected_error_message) do
             'Export cannot be downloaded until it is complete.'\
             ' Please try again later.'
-          }
+          end
 
           it_behaves_like :download_error
         end
