@@ -1,5 +1,5 @@
 <%= form_tag("#{export_engine.exports_path}/new", method: :get) do -%>
-  <%= hidden_field_tag :klass, 'HouseExporter' %>
+  <%= hidden_field_tag :klass, 'HouseCsvExporter' %>
   <!-- This is super insecure. Actual owner will need to be set/found in controller -->
   <%= hidden_field_tag :owner_id, user.id %>
   <%= hidden_field_tag 'params[house][id]', [house.id] %>

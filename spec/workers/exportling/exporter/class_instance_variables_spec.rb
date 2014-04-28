@@ -16,7 +16,7 @@ describe Exportling::Exporter::ClassInstanceVariables do
       end
 
       context 'fields have been set in the extending class' do
-        specify { expect(HouseExporter.fields).to match_array [:id, :price, :square_meters] }
+        specify { expect(HouseCsvExporter.fields).to match_array [:id, :price, :square_meters] }
       end
     end
 
@@ -26,7 +26,7 @@ describe Exportling::Exporter::ClassInstanceVariables do
       end
 
       context 'fields have been set in the extending class' do
-        specify { expect(HouseExporter.field_names).to match_array ['id', 'price', 'square_meters'] }
+        specify { expect(HouseCsvExporter.field_names).to match_array ['id', 'price', 'square_meters'] }
       end
     end
 
@@ -36,7 +36,7 @@ describe Exportling::Exporter::ClassInstanceVariables do
       end
 
       context 'set in extending class' do
-        specify { expect(HouseExporter.query_class_name).to eq 'HouseExporterQuery' }
+        specify { expect(HouseCsvExporter.query_class_name).to eq 'HouseExporterQuery' }
       end
     end
 
@@ -46,7 +46,7 @@ describe Exportling::Exporter::ClassInstanceVariables do
       end
 
       context 'set' do
-        subject { HouseExporter.associations }
+        subject { HouseCsvExporter.associations }
         specify { expect(subject).to be_a(Hash) }
         specify { expect(subject[:rooms]).to be_a(Exportling::Exporter::AssociationDetails) }
       end

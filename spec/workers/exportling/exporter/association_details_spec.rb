@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Exportling::Exporter::AssociationDetails do
-  let(:association_details) { HouseExporter.associations[:rooms] }
+  let(:association_details) { HouseCsvExporter.associations[:rooms] }
   let(:callback_options)    { { on_entry: 'on_room', on_finished: 'on_rooms_finished' } }
   let(:exporter_class)      { RoomExporter }
 

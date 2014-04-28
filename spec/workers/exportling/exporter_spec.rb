@@ -17,7 +17,7 @@ describe Exportling::Exporter do
   end
 
   describe '#perform' do
-    let(:exporter_class)  { HouseExporter }
+    let(:exporter_class)  { HouseCsvExporter }
     let(:exporter)        { exporter_class.new }
     let(:export)          { create(:export, klass: exporter_class.to_s, status: 'created') }
 
@@ -57,7 +57,7 @@ describe Exportling::Exporter do
   end
 
   describe '#find_each' do
-    let(:exporter)          { HouseExporter.new }
+    let(:exporter)          { HouseCsvExporter.new }
     let(:query_class_name)  { exporter.query_class_name }
     let(:query_class)       { query_class_name.constantize }
 
@@ -86,7 +86,7 @@ describe Exportling::Exporter do
 
   describe '#query_params' do
     let(:export)                { create(:export, params: export_params) }
-    let(:exporter)              { HouseExporter.new }
+    let(:exporter)              { HouseCsvExporter.new }
 
     before  { exporter.perform(export, params: options_params) }
     subject { exporter.query_params }
@@ -136,7 +136,7 @@ describe Exportling::Exporter do
   describe '#associated_data_for' do
     let(:context_object)        { double('house', id: 123) }
     let(:export)                { create(:export, params: { house: { id: context_object.id } }) }
-    let(:exporter)              { HouseExporter.new }
+    let(:exporter)              { HouseCsvExporter.new }
     let(:room_assoc)            { exporter.associations[:rooms] }
     let(:child_exporter_class)  { room_assoc.exporter_class }
     let(:child_options)         { room_assoc.child_options(context_object) }
@@ -155,7 +155,7 @@ describe Exportling::Exporter do
   end
 
   describe '#save_entry' do
-    let(:exporter) { HouseExporter.new }
+    let(:exporter) { HouseCsvExporter.new }
     let(:entry)    { double('Export Data') }
 
     subject { exporter.save_entry(entry) }

@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Exportling::Exporter::AssociationParams do
-  let(:association_params)  { HouseExporter.associations[:rooms].params }
+  let(:association_params)  { HouseCsvExporter.associations[:rooms].params }
 
   describe '#replaced_params' do
     subject { association_params.replaced_params(context_object) }

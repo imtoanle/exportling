@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Exportling::Export do
   # This exporter is defined in the dummy app
-  let(:exporter_class)  { HouseExporter }
+  let(:exporter_class)  { HouseCsvExporter }
   let(:export)          { create(:export, klass: exporter_class.to_s, status: 'foo') }
 
   describe '#worker_class' do
@@ -27,7 +27,7 @@ describe Exportling::Export do
   describe 'file_name' do
     let(:created_time)        { Time.zone.parse('Feb 1, 2009') }
     let(:export_id)           { export.id }
-    let(:expected_file_name)  { "#{export_id}_HouseExporter_2009-02-01.csv" }
+    let(:expected_file_name)  { "#{export_id}_HouseCsvExporter_2009-02-01.csv" }
 
     before  { export.update_column(:created_at, created_time) }
     specify { expect(export.file_name).to eq expected_file_name }
