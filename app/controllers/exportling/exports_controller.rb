@@ -4,13 +4,13 @@ class Exportling::ExportsController < Exportling::ApplicationController
   decorates_assigned :export
 
   def index
-    exports = Exportling::Export.where(owner_id: current_export_owner.id)
+    exports  = Exportling::Export.where(owner_id: _current_export_owner.id)
     @exports = Exportling::ExportDecorator.decorate_collection(exports)
   end
 
   def new
     @export = Exportling::Export.new(klass: params[:klass],
-                                     owner_id: current_export_owner.id,
+                                     owner_id: _current_export_owner.id,
                                      params: params[:params],
                                      file_type: params[:file_type])
   end
@@ -21,8 +21,8 @@ class Exportling::ExportsController < Exportling::ApplicationController
     # Hashes are not permitted by strong parameters, so we need to pull the params out separately
     # See: https://github.com/rails/strong_parameters#permitted-scalar-values
     @export.params = params[:export][:params]
+    @export.owner  = _current_export_owner
 
-    @export.owner = current_export_owner
 
     # TODO: Some kind of error handling
     if @export.valid?
@@ -37,9 +37,8 @@ class Exportling::ExportsController < Exportling::ApplicationController
   end
 
   def download
-    @export = Exportling::Export.find_by(id: params[:id], owner_id: current_export_owner.id)
-
-    send_file @export.output.path, disposition: 'attachment', x_sendfile: true, filename: @export.file_name
+    @export = Exportling::Export.find_by(id: params[:id], owner_id: _current_export_owner.id)
+      send_file @export.output.path, disposition: 'attachment', x_sendfile: true, filename: @export.file_name
   end
 
   def export_params

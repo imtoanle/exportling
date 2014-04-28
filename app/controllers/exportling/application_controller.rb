@@ -7,7 +7,8 @@ class Exportling::ApplicationController < ApplicationController
     skip_authorization_check
   end
 
-  def current_export_owner
+  # prepended with underscore to reduce likelihood of naming conflicts
+  def _current_export_owner
     self.send(Exportling.export_owner_method)
   end
 end
