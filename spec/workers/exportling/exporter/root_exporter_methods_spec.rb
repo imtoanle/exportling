@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Exportling::Exporter::RootExporterMethods do
-  let(:exporter_class)  { HouseExporter }
+  let(:exporter_class)  { HouseCsvExporter }
   let(:exporter)        { exporter_class.new }
   let(:export)          { create(:export, klass: exporter_class.to_s, status: 'created') }
 
@@ -9,7 +9,7 @@ describe Exportling::Exporter::RootExporterMethods do
     exporter.instance_variable_set(:@export, export)
   end
 
-  it_should_behave_like :performed_export, 'root', HouseExporter
+  it_should_behave_like :performed_export, 'root', HouseCsvExporter
 
   describe '#perform_as_root' do
     subject { exporter.perform_as_root }

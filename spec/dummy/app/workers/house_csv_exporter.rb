@@ -1,4 +1,4 @@
-class HouseExporter < Exportling::Exporter
+class HouseCsvExporter < Exportling::Exporter
   export_field :id
   export_field :price
   export_field :square_meters

@@ -1,9 +1,6 @@
 <%= form_for @export do |f| %>
   <%= f.hidden_field :klass %>
-  <!-- TODO: Fix Unsecure setting of owner. -->
-  <%= f.hidden_field :owner_id %>
   <%= hash_to_hidden_fields({ export: { params: @export.params } }) %>
   <%= f.hidden_field :file_type %>
-
   <%= f.submit %>
 <% end%>

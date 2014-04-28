@@ -1,11 +1,16 @@
 require "exportling/engine"
 
 module Exportling
-  mattr_accessor :export_owner_class, :base_storage_directory
+  mattr_accessor :export_owner_class, :export_owner_method, :base_storage_directory
 
   # Allow the base application to set the owner of the export
   def self.export_owner_class
     @@export_owner_class.constantize
+  end
+
+  # Allow base application to define the method to find the current owner
+  def self.export_owner_method
+    @@export_owner_method
   end
 
   # Allow the base application to set the export directory

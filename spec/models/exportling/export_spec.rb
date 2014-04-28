@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Exportling::Export do
   # This exporter is defined in the dummy app
-  let(:exporter_class)  { HouseExporter }
+  let(:exporter_class)  { HouseCsvExporter }
   let(:export)          { create(:export, klass: exporter_class.to_s, status: 'foo') }
 
   describe '#worker_class' do
@@ -10,7 +10,7 @@ describe Exportling::Export do
     specify { expect(subject).to eq exporter_class }
   end
 
-  describe 'completed?' do
+  describe '#completed?' do
     subject { export.completed? }
     before  { export.update_attributes(status: status) }
     context 'status is not "completed"' do
@@ -24,10 +24,24 @@ describe Exportling::Export do
     end
   end
 
+  describe '#incomplete?' do
+    before  { allow(export).to receive(:completed?) { completed } }
+    subject { export.incomplete? }
+    context 'when complete' do
+      let(:completed) { true }
+      specify { expect(subject).to eq false }
+    end
+
+    context 'when incomplete' do
+      let(:completed) { false }
+      specify { expect(subject).to eq true }
+    end
+  end
+
   describe 'file_name' do
     let(:created_time)        { Time.zone.parse('Feb 1, 2009') }
     let(:export_id)           { export.id }
-    let(:expected_file_name)  { "#{export_id}_HouseExporter_2009-02-01.csv" }
+    let(:expected_file_name)  { "#{export_id}_HouseCsvExporter_2009-02-01.csv" }
 
     before  { export.update_column(:created_at, created_time) }
     specify { expect(export.file_name).to eq expected_file_name }
@@ -43,6 +57,14 @@ describe Exportling::Export do
     describe '#fail!' do
       before  { export.fail! }
       specify { expect(subject).to eq 'failed' }
+    end
+
+    describe '#perform!' do
+      subject { export.perform! }
+      it 'calls perform! on the worker class' do
+        expect(export.worker_class).to receive(:perform).with(export.id)
+        subject
+      end
     end
   end
 

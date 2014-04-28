@@ -43,9 +43,14 @@ Configure Exportling in your application
 
 `config/initializers/exportling.rb`
 
-    # (Recommended) Set the export owner class (used to scope exports to a parent)
-    Exportling.export_owner_class = "User"
+    # (Required) Set the export owner class (used to scope exports to a parent)
+    Exportling.export_owner_class = 'User'
     
+    # (Required) Set the method to find the current owner class.
+    # This method must be available to the main application's ApplicationController
+    # E.g. If using devise, this would be set to
+    Exportling.export_owner_method = :current_user
+
     # (Optional) Set the export save directory ('exportling' by default)
     # All files will be saved under custom_exportling_directory/exports/owner_id/
     Exportling.base_storage_directory = 'custom_exportling_directory'
@@ -88,7 +93,7 @@ The exporter class is responsible for defining the fields to be exported, the qu
 
       # Specify the query object that should be used to retrieve the model data
       query_class_name 'HouseExporterQuery'
-      
+
 
       # Called at the start of parent perform
       # Open a new csv file, and add field headers
@@ -149,7 +154,7 @@ Note that these params aren't particularly useful, as *every* room that meets th
 Probably the most common case, as this allows us to scope the child export to the current parent object. For example, if we want to fetch all rooms of our current house for each house entry, we would specify our association params as below.
 
     params: { room: { house_id: :id } }
-    
+
 Notice that the value for `house_id` is the placeholder symbol, `:id`. Before passing the params to the associated exporter, exportling will attempt to replace any symbols with data for the current entry. If the entry responds to the symbol, the symbol will be replaced with real data. Otherwise, an error is raised.
 
 The entry is whatever is passed back from the query object of the current exporter. In the case of the `HouseCsvExporter`, this is a `House` instance. However, there are no restrictions in the system preventing the query object from returning any arbitrary object. As long as the object responds to any symbol value defined in the association params, exportling will replace the symbol with the returned method value.
@@ -206,7 +211,7 @@ Creating the most basic room exporter will allow us to create the CSV we want by
 If this exporter is used on its own, it will not write anything to an export file, as none of its callback methods are actually processing the data. However, its default behaviour means it will at least store all found entries in an accessible instance variable.
 
 The default exporter behaviour saves each entry in the exporter's `export_entries` instance variable. Because the `HouseCsvExporter` has defined this as an association, `export_entries` will be passed to the house exporter's `on_entry` method as the second argument. To create the example csv line described above, the `HouseCsvExporter` needs to change its `on_entry` method to the following:
-    
+
       def on_entry(export_data, associated_data=nil)
         # Data from this house
         row_data = export_data.attributes.values_at(*field_names)
@@ -234,7 +239,7 @@ The `RoomExporter` could overwrite this method to become:
       @export_entries ||= []
       @export_entries << export_data.name
     end
-    
+
 This reduces the data we are storing and returning, but still requires the processing by the parent exporter. Rather than passing back the array of names, we could pass back the concatenated string by overwriting the `export_entries` method, which just returns `@export_entries` by default.
 
     def export_entries
@@ -260,7 +265,7 @@ Example Lines
     32, 350_000, 600,  Bed1
     32, 350_000, 600,  Bed2
 
-    
+
 If you are looking to export data as would be returned from a LEFT OUTER JOIN query (as shown above), you would set up your exporters as below.
 
 ###### Room Exporter
@@ -296,7 +301,7 @@ This is defined as before, with the only change made to `on_entry`.
             @csv << (row_data + [room_entry.name])
           end
         else
-          @csv << row_data          
+          @csv << row_data
         end
       end
 
@@ -310,7 +315,7 @@ Again this behaviour is made possible by altering the `HouseCsvExporter`'s `on_e
       def on_entry(export_data, associated_data=nil)
         house_data = export_data.attributes.values_at(*field_names)
        	write_entry(house_data)
-        
+
         # Data from child rooms of this house
         if associated_data.present?
           associated_data[:rooms].each do |room_entry|
@@ -321,11 +326,11 @@ Again this behaviour is made possible by altering the `HouseCsvExporter`'s `on_e
 
 
 ### Form
-To allow the user to request an export, you need to create a form to send export information to to the export engine. Assuming you have exportling mounted as `:export_engine`, and wish to export a single `House` object. 
+To allow the user to request an export, you need to create a form to send export information to to the export engine. Assuming you have exportling mounted as `:export_engine`, and wish to export a single `House` object.
 
     <%= form_tag("#{export_engine.exports_path}/new", method: :get) do -%>
       <!-- The exporter class that will be the entry point of the export -->
-      <%= hidden_field_tag :klass, 'HouseExporter' %>
+      <%= hidden_field_tag :klass, 'HouseCsvExporter' %>
       <!-- FIXME: This is super insecure. Actual owner should be set in controller -->
       <%= hidden_field_tag :owner_id, user.id %>
       <!-- All params sent will be saved in the export object, and used by the exporters to find objects to export -->
