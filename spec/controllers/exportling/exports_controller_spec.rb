@@ -148,7 +148,8 @@ describe Exportling::ExportsController do
           it 'downloads the export' do
             file_name = export.file_name
             expect(response.content_type).to eq('text/csv')
-            expect(response.headers['Content-Disposition']).to eq("attachment; filename=\"#{file_name}\"")
+            expect_headers = expect(response.headers['Content-Disposition'])
+            expect_headers.to eq("attachment; filename=\"#{file_name}\"")
           end
         end
 
