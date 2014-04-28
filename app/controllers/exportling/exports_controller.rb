@@ -9,6 +9,9 @@ class Exportling::ExportsController < Exportling::ApplicationController
   end
 
   def new
+    # TODO: Improve how klass is specified
+    #        The current method of including it in hidden fields opens it
+    #        up to user tampering
     @export = Exportling::Export.new(klass: params[:klass],
                                      owner_id: _current_export_owner.id,
                                      params: params[:params],
