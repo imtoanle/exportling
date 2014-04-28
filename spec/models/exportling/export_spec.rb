@@ -10,7 +10,7 @@ describe Exportling::Export do
     specify { expect(subject).to eq exporter_class }
   end
 
-  describe 'completed?' do
+  describe '#completed?' do
     subject { export.completed? }
     before  { export.update_attributes(status: status) }
     context 'status is not "completed"' do
@@ -21,6 +21,20 @@ describe Exportling::Export do
     context 'status is "completed"' do
       let(:status) { 'completed' }
       it { should eq true }
+    end
+  end
+
+  describe '#incomplete?' do
+    before  { allow(export).to receive(:completed?) { completed } }
+    subject { export.incomplete? }
+    context 'when complete' do
+      let(:completed) { true }
+      specify { expect(subject).to eq false }
+    end
+
+    context 'when incomplete' do
+      let(:completed) { false }
+      specify { expect(subject).to eq true }
     end
   end
 
@@ -43,6 +57,14 @@ describe Exportling::Export do
     describe '#fail!' do
       before  { export.fail! }
       specify { expect(subject).to eq 'failed' }
+    end
+
+    describe '#perform!' do
+      subject { export.perform! }
+      it 'calls perform! on the worker class' do
+        expect(export.worker_class).to receive(:perform).with(export.id)
+        subject
+      end
     end
   end
 

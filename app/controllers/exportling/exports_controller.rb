@@ -13,6 +13,10 @@ class Exportling::ExportsController < Exportling::ApplicationController
                                      owner_id: _current_export_owner.id,
                                      params: params[:params],
                                      file_type: params[:file_type])
+
+    unless @export.valid?
+      raise ArgumentError, @export.invalid_atributes_message
+    end
   end
 
   def create
@@ -23,22 +27,31 @@ class Exportling::ExportsController < Exportling::ApplicationController
     @export.params = params[:export][:params]
     @export.owner  = _current_export_owner
 
-
-    # TODO: Some kind of error handling
-    if @export.valid?
-      @export.save
-
-      # FIXME: Sidekiq isn't picking these jobs up (probably not configured correctly locally)
-      # @export.worker_class.perform_async(@export.id)
-      @export.worker_class.perform(@export.id)  # Perform export synchronously for now
-
-      redirect_to exports_path
+    unless @export.valid?
+      raise ArgumentError, @export.invalid_atributes_message
     end
+
+    @export.save
+    # FIXME: Sidekiq isn't picking these jobs up (probably not configured correctly locally)
+    # @export.worker_class.perform_async(@export.id)
+    @export.perform! # Perform export synchronously for now
+
+    redirect_to root_path
   end
 
+  # TODO: Consider making this the show action (we don't use #show otherwise)
   def download
     @export = Exportling::Export.find_by(id: params[:id], owner_id: _current_export_owner.id)
+
+    if @export.nil?
+      flash[:error] = I18n.t('exportling.export.download.not_found')
+      redirect_to root_path
+    elsif @export.incomplete?
+      flash[:error] = I18n.t('exportling.export.download.incomplete')
+      redirect_to root_path
+    else
       send_file @export.output.path, disposition: 'attachment', x_sendfile: true, filename: @export.file_name
+    end
   end
 
   def export_params

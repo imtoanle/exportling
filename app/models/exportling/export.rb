@@ -17,6 +17,10 @@ class Exportling::Export < ActiveRecord::Base
     status == 'completed'
   end
 
+  def incomplete?
+    !completed?
+  end
+
   def file_name
     "#{id}_#{klass}_#{created_at.strftime('%Y-%m-%d')}.#{file_type}"
   end
@@ -27,5 +31,10 @@ class Exportling::Export < ActiveRecord::Base
 
   def fail!
     update_attributes(status: 'failed')
+  end
+
+  # TODO: Create async_perform! (when Sidekiq working)
+  def perform!
+    worker_class.perform(id)
   end
 end
