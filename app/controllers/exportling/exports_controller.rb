@@ -42,7 +42,6 @@ class Exportling::ExportsController < Exportling::ApplicationController
 
     # Save the export and start it processing
     @export.save
-    @export.perform_async!
 
     redirect_to root_path
   end
@@ -71,7 +70,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
                                          owner_id: _current_export_owner.id)
     @export.status = 'pending'
     @exports.save
-    @export.perform!
+    @export.perform_async!
   end
 
   def export_params

@@ -4,6 +4,7 @@ Exportling::Engine.routes.draw do
   resources :exports do
     member do
       get :download
+      get :retry
     end
   end
 
