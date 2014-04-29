@@ -116,7 +116,6 @@ describe Exportling::Export do
         it 'does not create the file' do
           expect(File.exists?(expected_file_path)).to eq false
         end
-
       end
 
       context 'when file added' do
