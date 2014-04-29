@@ -1,6 +1,7 @@
 class Exportling::Export < ActiveRecord::Base
   belongs_to :owner, class_name: Exportling.export_owner_class.to_s
 
+  validates :name, presence: true
   validates :klass, presence: true
   validates :file_type, presence: true
 
@@ -21,8 +22,12 @@ class Exportling::Export < ActiveRecord::Base
     !completed?
   end
 
+  def failed?
+    status == 'failed'
+  end
+
   def file_name
-    "#{id}_#{klass}_#{created_at.strftime('%Y-%m-%d')}.#{file_type}"
+    "#{id}_#{name}_#{created_at.strftime('%Y-%m-%d')}.#{file_type}"
   end
 
   def complete!

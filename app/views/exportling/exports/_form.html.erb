@@ -1,4 +1,5 @@
 <%= form_for @export do |f| %>
+  <%= f.hidden_field :name %>
   <%= f.hidden_field :klass %>
   <%= hash_to_hidden_fields({ export: { params: @export.params } }) %>
   <%= f.hidden_field :file_type %>

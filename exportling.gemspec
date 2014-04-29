@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version     = Exportling::VERSION
   s.authors     = ["John D'Agostino", 'David Reece']
   s.email       = ["john.dagostino@gmail.com", 'david.reece@gmail.com']
-  s.homepage    = "http://github.com/johndagostino/exportling"
+  s.homepage    = "http://github.com/jobready/exportling"
   s.summary     = "Rails record exporting engine"
   s.description = "A simple rails engine for exporting records"
 
@@ -19,6 +19,7 @@ Gem::Specification.new do |s|
   s.add_dependency "rails", "~> 4.0"
   s.add_dependency 'carrierwave', '~> 0.10.0'
   s.add_dependency 'sidekiq', '~> 2.17.0'
+  s.add_dependency 'kaminari', '~> 0.15.1'
   s.add_dependency 'hash_to_hidden_fields', '~> 2.0.1'
   s.add_dependency 'draper', '~> 1.3.0'
 
