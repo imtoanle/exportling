@@ -38,6 +38,21 @@ describe Exportling::Export do
     end
   end
 
+  describe '#processing?' do
+    before  { export.status = export_status }
+    subject { export.processing? }
+
+    context 'when status is processing' do
+      let(:export_status) { 'processing' }
+      specify { expect(subject).to eq true }
+    end
+
+    context 'when status is not processing' do
+      let(:export_status) { 'created' }
+      specify { expect(subject).to eq false }
+    end
+  end
+
   describe 'file_name' do
     let(:created_time)        { Time.zone.parse('Feb 1, 2009') }
     let(:export_id)           { export.id }
@@ -57,6 +72,11 @@ describe Exportling::Export do
     describe '#fail!' do
       before  { export.fail! }
       specify { expect(subject).to eq 'failed' }
+    end
+
+    describe 'set_processing!' do
+      before  { export.set_processing! }
+      specify { expect(subject).to eq 'processing' }
     end
 
     describe '#perform!' do

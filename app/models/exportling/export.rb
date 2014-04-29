@@ -26,8 +26,16 @@ class Exportling::Export < ActiveRecord::Base
     status.downcase == 'failed'
   end
 
+  def processing?
+    status == 'processing'
+  end
+
   def file_name
     "#{id}_#{name.parameterize}_#{created_at.strftime('%Y-%m-%d')}.#{file_type}"
+  end
+
+  def set_processing!
+    update_attributes(status: 'processing')
   end
 
   def complete!
