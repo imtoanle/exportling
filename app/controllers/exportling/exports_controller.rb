@@ -4,15 +4,17 @@ class Exportling::ExportsController < Exportling::ApplicationController
   decorates_assigned :export
 
   def index
-    exports  = Exportling::Export.where(owner_id: _current_export_owner.id)
+    exports  = Exportling::Export.where(owner_id: _current_export_owner.id).page(params[:page] || 1)
     @exports = Exportling::ExportDecorator.decorate_collection(exports)
   end
 
   def new
+    name = params[:name] || params[:klass]
     # TODO: Improve how klass is specified
     #        The current method of including it in hidden fields opens it
     #        up to user tampering
-    @export = Exportling::Export.new(klass: params[:klass],
+    @export = Exportling::Export.new(name: name,
+                                     klass: params[:klass],
                                      owner_id: _current_export_owner.id,
                                      params: params[:params],
                                      file_type: params[:file_type])

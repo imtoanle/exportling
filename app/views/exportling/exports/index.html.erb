@@ -16,6 +16,8 @@
     </tr>
     <%= render @exports %>
   </table>
+
+  <%= paginate @exports %>
 <% else %>
   <p>No Exports Found</p>
 <% end %>
