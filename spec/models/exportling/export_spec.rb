@@ -38,6 +38,21 @@ describe Exportling::Export do
     end
   end
 
+  describe '#processing?' do
+    before  { export.status = export_status }
+    subject { export.processing? }
+
+    context 'when status is processing' do
+      let(:export_status) { 'processing' }
+      specify { expect(subject).to eq true }
+    end
+
+    context 'when status is not processing' do
+      let(:export_status) { 'created' }
+      specify { expect(subject).to eq false }
+    end
+  end
+
   describe 'file_name' do
     let(:created_time)        { Time.zone.parse('Feb 1, 2009') }
     let(:export_id)           { export.id }
@@ -59,11 +74,25 @@ describe Exportling::Export do
       specify { expect(subject).to eq 'failed' }
     end
 
+    describe 'set_processing!' do
+      before  { export.set_processing! }
+      specify { expect(subject).to eq 'processing' }
+    end
+
     describe '#perform!' do
       subject { export.perform! }
       it 'calls perform! on the worker class' do
         expect(export.worker_class).to receive(:perform).with(export.id)
         subject
+      end
+    end
+
+    describe '#perform_async!' do
+      Sidekiq::Testing.fake!
+      subject { export.perform_async! }
+
+      it 'queues its exporter for processing' do
+        expect { subject }.to change(export.worker_class.jobs, :size).by(1)
       end
     end
   end
@@ -87,7 +116,6 @@ describe Exportling::Export do
         it 'does not create the file' do
           expect(File.exists?(expected_file_path)).to eq false
         end
-
       end
 
       context 'when file added' do

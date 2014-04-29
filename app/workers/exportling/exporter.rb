@@ -29,6 +29,8 @@ module Exportling
       # Don't perform export more than once (idempotence)
       return if @export.completed?
 
+      @export.set_processing!
+
       # Run the rest of the export as if we are a root or child exporter, depending on perform arguments
       if @child
         perform_as_child

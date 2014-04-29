@@ -57,12 +57,18 @@ Configure Exportling in your application
 
 Sidekiq Queue
 
-  All exportling export tasks run on the `exportling_exports` queue, so you need to ensure
-  that sidekiq will process that queue (in the config/sidekiq.yml)
+Configure Sidekiq in your application. If you are already using Sidekiq, this is simply a matter of adding the queue, `exportling_exports` to your config.
+
+`config/sidekiq.yml`
+
+    :queues:
+      - [exportling_exports, 1]
+
+If your application does not use sidekiq, you will need to follow the full setup process, documented [here](https://github.com/mperham/sidekiq/wiki), before adding the queue.
 
 ## Current State
 
-Exportling currently allows a developer to specify a simple nested exports. Exports are processed in the foreground, not by a background worker.
+Exportling currently allows a developer to specify a simple nested exports. Exports are processed in the background by sidekiq, which must be set up in the main application. At some point, we may allow the main app to specify whether they want to use sidekiq, or just process jobs in the foreground.
 
 ## Usage
 To export a model, you will need to define two classes

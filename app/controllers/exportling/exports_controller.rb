@@ -36,15 +36,13 @@ class Exportling::ExportsController < Exportling::ApplicationController
       raise ArgumentError, @export.invalid_attributes_message
     end
 
+    # Save the export and start it processing
     @export.save
-    # FIXME: Sidekiq isn't picking these jobs up (probably not configured correctly locally)
-    # @export.worker_class.perform_async(@export.id)
-    @export.perform! # Perform export synchronously for now
+    @export.perform_async!
 
     redirect_to root_path
   end
 
-  # TODO: Consider making this the show action (we don't use #show otherwise)
   def download
     @export = Exportling::Export.find_by(id: params[:id], owner_id: _current_export_owner.id)
 

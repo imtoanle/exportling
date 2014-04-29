@@ -8,7 +8,7 @@ Gem::Specification.new do |s|
   s.name        = "exportling"
   s.version     = Exportling::VERSION
   s.authors     = ["John D'Agostino", 'David Reece']
-  s.email       = ["john.dagostino@gmail.com", 'david.reece@gmail.com']
+  s.email       = ["john.dagostino@gmail.com", 'dv.reece@gmail.com']
   s.homepage    = "http://github.com/jobready/exportling"
   s.summary     = "Rails record exporting engine"
   s.description = "A simple rails engine for exporting records"
@@ -28,6 +28,5 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'database_cleaner', '~> 1.2.0'
   s.add_development_dependency "byebug", '~> 2.7.0'
   s.add_development_dependency "sqlite3"
-  # For the dummy app, so we can test using exportling with an application using devise
-  # s.add_development_dependency "devise", '~> 3.2.4'
+  s.add_development_dependency 'sinatra', '>= 1.3.0'
 end
