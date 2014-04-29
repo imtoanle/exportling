@@ -86,6 +86,15 @@ describe Exportling::Export do
         subject
       end
     end
+
+    describe '#perform_async!' do
+      Sidekiq::Testing.fake!
+      subject { export.perform_async! }
+
+      it 'queues its exporter for processing' do
+        expect { subject }.to change(export.worker_class.jobs, :size).by(1)
+      end
+    end
   end
 
   describe 'Uploader' do

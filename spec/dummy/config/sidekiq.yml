@@ -1,0 +1,8 @@
+:verbose: true
+:concurrency:  1
+:queues:
+  - [exportling_exports, 1]
+
+development:
+  :logfile: ./log/sidekiq.log
+  :pidfile: ./sidekiq.pid

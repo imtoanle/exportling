@@ -46,8 +46,13 @@ class Exportling::Export < ActiveRecord::Base
     update_attributes(status: 'failed')
   end
 
-  # TODO: Create async_perform! (when Sidekiq working)
+  # Perform the export
   def perform!
     worker_class.perform(id)
+  end
+
+  # Perform the export as a background job with Sidekiq
+  def perform_async!
+    worker_class.perform_async(id)
   end
 end

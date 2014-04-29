@@ -86,7 +86,7 @@ describe Exportling::ExportsController do
     context 'given valid params' do
       before do
         # Mocking .perform allows us to spy on this class/method
-        allow(HouseCsvExporter).to receive(:perform)
+        allow_any_instance_of(Exportling::Export).to receive(:perform_async!)
         post :create, export: params
       end
 
@@ -107,7 +107,7 @@ describe Exportling::ExportsController do
 
       it 'performs the export' do
         export = assigns(:export)
-        expect(HouseCsvExporter).to have_received(:perform).with(export.id)
+        expect(export).to have_received(:perform_async!)
       end
     end
 

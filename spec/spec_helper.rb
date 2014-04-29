@@ -6,6 +6,7 @@ require 'rspec/rails'
 require 'factory_girl_rails'
 require 'byebug'
 require 'database_cleaner'
+require 'sidekiq/testing'
 
 Rails.backtrace_cleaner.remove_silencers!
 
@@ -22,6 +23,11 @@ RSpec.configure do |config|
   config.color_enabled = true
   config.formatter = :documentation
 
-  # Make sure we fail the build for deprecation warnings (which will give us a proper backtract)
+  # Make sure we clear Sidekiq jobs between tests
+  config.before(:each) do
+    Sidekiq::Worker.clear_all
+  end
+
+  # Make sure we fail the build for deprecation warnings (which will give us a proper backtrace)
   config.raise_errors_for_deprecations!
 end
