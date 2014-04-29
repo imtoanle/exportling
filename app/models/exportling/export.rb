@@ -23,11 +23,11 @@ class Exportling::Export < ActiveRecord::Base
   end
 
   def failed?
-    status == 'failed'
+    status.downcase == 'failed'
   end
 
   def file_name
-    "#{id}_#{name}_#{created_at.strftime('%Y-%m-%d')}.#{file_type}"
+    "#{id}_#{name.parameterize}_#{created_at.strftime('%Y-%m-%d')}.#{file_type}"
   end
 
   def complete!
