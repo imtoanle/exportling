@@ -42,6 +42,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
 
     # Save the export and start it processing
     @export.save
+    @export.perform_async!
 
     redirect_to root_path
   end
@@ -68,7 +69,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
   def retry
     @export = Exportling::Export.find_by(id: params[:id],
                                          owner_id: _current_export_owner.id)
-    @export.status = 'pending'
+    @export.status = 'created'
     @exports.save
     @export.perform_async!
 
