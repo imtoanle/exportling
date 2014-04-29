@@ -1,5 +1,5 @@
 class AddNameToExport < ActiveRecord::Migration
   def change
-    add_column :exporting_exports, :name, :string, null: false, default: ''
+    add_column :exportling_exports, :name, :string, null: false, default: ''
   end
 end
