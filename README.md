@@ -55,7 +55,10 @@ Configure Exportling in your application
     # All files will be saved under custom_exportling_directory/exports/owner_id/
     Exportling.base_storage_directory = 'custom_exportling_directory'
 
+Sidekiq Queue
 
+  All exportling export tasks run on the `exportling_exports` queue, so you need to ensure
+  that sidekiq will process that queue (in the config/sidekiq.yml)
 
 ## Current State
 
