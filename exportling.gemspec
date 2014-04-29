@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
   s.version     = Exportling::VERSION
   s.authors     = ["John D'Agostino", 'David Reece']
   s.email       = ["john.dagostino@gmail.com", 'david.reece@gmail.com']
-  s.homepage    = "http://github.com/johndagostino/exportling"
+  s.homepage    = "http://github.com/jobready/exportling"
   s.summary     = "Rails record exporting engine"
   s.description = "A simple rails engine for exporting records"
 
