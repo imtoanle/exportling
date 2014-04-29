@@ -7,7 +7,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
     # query.merge({ owner_id_eql: current_export_owner.id })
     # @query = Exportling::Export.ransack(query)
     # exports = @query.result.page(params[:page] || 1)
-    exports  = Exportling::Export.where(owner_id: _current_export_owner.
+    exports  = Exportling::Export.where(owner_id: _current_export_owner.id)
                                  .order(created_at: :desc)
                                  .page(params[:page] || 1)
     @exports = Exportling::ExportsDecorator.decorate(exports)
