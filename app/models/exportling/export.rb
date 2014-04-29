@@ -40,6 +40,6 @@ class Exportling::Export < ActiveRecord::Base
 
   # TODO: Create async_perform! (when Sidekiq working)
   def perform!
-    worker_class.perform(id)
+    worker_class.perform_async(id)
   end
 end

@@ -11,6 +11,6 @@ gemspec
 # your gem to rubygems.org.
 
 gem 'kaminari'
-
+gem 'sinatra', '>= 1.3.0', :require => nil
 # To use debugger
 # gem 'debugger'

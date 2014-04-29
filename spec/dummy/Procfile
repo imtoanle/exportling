@@ -1,0 +1,4 @@
+# put things you wanna run together in this file
+web: bundle exec rails s -p 8080
+sidekiq: bundle exec sidekiq -C config/sidekiq.yml
+
