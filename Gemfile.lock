@@ -156,5 +156,6 @@ DEPENDENCIES
   database_cleaner (~> 1.2.0)
   exportling!
   factory_girl_rails (~> 4.4.1)
+  kaminari
   rspec-rails (~> 3.0.0.beta)
   sqlite3

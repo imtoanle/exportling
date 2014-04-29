@@ -5,7 +5,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
 
   def index
     exports  = Exportling::Export.where(owner_id: _current_export_owner.id).page(params[:page] || 1)
-    @exports = Exportling::ExportDecorator.decorate_collection(exports)
+    @exports = Exportling::ExportsDecorator.decorate(exports)
   end
 
   def new
@@ -18,9 +18,9 @@ class Exportling::ExportsController < Exportling::ApplicationController
                                      owner_id: _current_export_owner.id,
                                      params: params[:params],
                                      file_type: params[:file_type])
-
+    @export.decorate
     unless @export.valid?
-      raise ArgumentError, @export.invalid_atributes_message
+      raise ArgumentError, @export.invalid_attributes_message
     end
   end
 
@@ -31,9 +31,10 @@ class Exportling::ExportsController < Exportling::ApplicationController
     # See: https://github.com/rails/strong_parameters#permitted-scalar-values
     @export.params = params[:export][:params]
     @export.owner  = _current_export_owner
+    @export.decorate
 
     unless @export.valid?
-      raise ArgumentError, @export.invalid_atributes_message
+      raise ArgumentError, @export.invalid_attributes_message
     end
 
     @export.save
@@ -74,7 +75,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
 
   def export_params
     params.require(:export).permit(
-      :klass, :file_type
+      :klass, :file_type, :name
     )
   end
 end
