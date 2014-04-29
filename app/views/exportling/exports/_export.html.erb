@@ -8,7 +8,7 @@
   <td><%= export.status.capitalize %></td>
   <td><% if export.completed? %>
     <%= link_to 'Download', download_export_path(export) %><% end %>
-  <td><% if export.failed? %>
+   <% if export.failed? %>
     <%= link_to 'Retry', retry_export_path(export) %><% end %>
-</td>
+  </td>
 </tr>
