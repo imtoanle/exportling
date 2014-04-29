@@ -1,6 +1,7 @@
 FactoryGirl.define do
   factory :export, class: Exportling::Export do
     association :owner, factory: :user
+    name 'Houses'
     klass  'HouseCsvExporter'
     status 'created'
     file_type 'csv'
