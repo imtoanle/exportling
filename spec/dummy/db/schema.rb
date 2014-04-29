@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140422013216) do
+ActiveRecord::Schema.define(version: 20140429071833) do
 
   create_table "exportling_exports", force: true do |t|
     t.integer  "owner_id"
@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20140422013216) do
     t.text     "params"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "name",       default: "",        null: false
   end
 
   create_table "houses", force: true do |t|
