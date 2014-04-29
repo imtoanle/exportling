@@ -22,6 +22,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'kaminari', '~> 0.15.1'
   s.add_dependency 'hash_to_hidden_fields', '~> 2.0.1'
   s.add_dependency 'draper', '~> 1.3.0'
+  s.add_dependency 'ransack', '~> 1.2.2'
 
   s.add_development_dependency "rspec-rails", '~> 3.0.0.beta'
   s.add_development_dependency 'factory_girl_rails', '~> 4.4.1'

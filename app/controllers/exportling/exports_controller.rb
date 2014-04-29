@@ -3,7 +3,11 @@ class Exportling::ExportsController < Exportling::ApplicationController
   decorates_assigned :export
 
   def index
-    exports  = Exportling::Export.where(owner_id: _current_export_owner.id)
+    # query = params[:q] || {}
+    # query.merge({ owner_id_eql: current_export_owner.id })
+    # @query = Exportling::Export.ransack(query)
+    # exports = @query.result.page(params[:page] || 1)
+    exports  = Exportling::Export.where(owner_id: _current_export_owner.
                                  .order(created_at: :desc)
                                  .page(params[:page] || 1)
     @exports = Exportling::ExportsDecorator.decorate(exports)
