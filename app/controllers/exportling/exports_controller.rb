@@ -1,6 +1,5 @@
 # TODO: Ensure all exports scoped to owner
 class Exportling::ExportsController < Exportling::ApplicationController
-
   decorates_assigned :export
 
   def index
@@ -18,7 +17,6 @@ class Exportling::ExportsController < Exportling::ApplicationController
                                      owner_id: _current_export_owner.id,
                                      params: params[:params],
                                      file_type: params[:file_type])
-    @export.decorate
     unless @export.valid?
       raise ArgumentError, @export.invalid_attributes_message
     end
@@ -31,7 +29,6 @@ class Exportling::ExportsController < Exportling::ApplicationController
     # See: https://github.com/rails/strong_parameters#permitted-scalar-values
     @export.params = params[:export][:params]
     @export.owner  = _current_export_owner
-    @export.decorate
 
     unless @export.valid?
       raise ArgumentError, @export.invalid_attributes_message

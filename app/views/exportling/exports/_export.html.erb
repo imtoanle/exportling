@@ -6,5 +6,9 @@
   <td><%= export.created_at %></td>
   <td><%= export.updated_at %></td>
   <td><%= export.status.capitalize %></td>
-  <td><% if export.completed? %><%= link_to 'Download', download_export_path(export) %><% end %></td>
+  <td><% if export.completed? %>
+    <%= link_to 'Download', download_export_path(export) %><% end %>
+  <td><% if export.failed? %>
+    <%= link_to 'Retry', retry_export_path(export) %><% end %>
+</td>
 </tr>

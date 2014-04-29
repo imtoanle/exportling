@@ -41,7 +41,7 @@ describe Exportling::Export do
   describe 'file_name' do
     let(:created_time)        { Time.zone.parse('Feb 1, 2009') }
     let(:export_id)           { export.id }
-    let(:expected_file_name)  { "#{export_id}_Houses_2009-02-01.csv" }
+    let(:expected_file_name)  { "#{export_id}_houses_2009-02-01.csv" }
 
     before  { export.update_column(:created_at, created_time) }
     specify { expect(export.file_name).to eq expected_file_name }
