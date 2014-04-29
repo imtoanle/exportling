@@ -3,7 +3,9 @@ class Exportling::ExportsController < Exportling::ApplicationController
   decorates_assigned :export
 
   def index
-    exports  = Exportling::Export.where(owner_id: _current_export_owner.id).page(params[:page] || 1)
+    exports  = Exportling::Export.where(owner_id: _current_export_owner.id)
+                                 .order_by(created_at: :desc)
+                                 .page(params[:page] || 1)
     @exports = Exportling::ExportsDecorator.decorate(exports)
   end
 
