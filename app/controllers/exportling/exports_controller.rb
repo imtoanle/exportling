@@ -64,6 +64,14 @@ class Exportling::ExportsController < Exportling::ApplicationController
     end
   end
 
+  def retry
+    @export = Exportling::Export.find_by(id: params[:id],
+                                         owner_id: _current_export_owner.id)
+    @export.status = 'pending'
+    @exports.save
+    @export.perform!
+  end
+
   def export_params
     params.require(:export).permit(
       :klass, :file_type

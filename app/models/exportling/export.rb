@@ -22,6 +22,10 @@ class Exportling::Export < ActiveRecord::Base
     !completed?
   end
 
+  def failed?
+    status == 'failed'
+  end
+
   def file_name
     "#{id}_#{name}_#{created_at.strftime('%Y-%m-%d')}.#{file_type}"
   end
