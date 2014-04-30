@@ -48,7 +48,8 @@ class Exportling::ExportsController < Exportling::ApplicationController
   end
 
   def download
-    @export = Exportling::Export.find_by(id: params[:id], owner_id: _current_export_owner.id)
+    @export = Exportling::Export.find_by(id: params[:id],
+                                         owner_id: _current_export_owner.id)
 
     if @export.nil?
       flash[:error] = I18n.t('exportling.export.download.not_found')
@@ -56,13 +57,11 @@ class Exportling::ExportsController < Exportling::ApplicationController
     elsif @export.incomplete?
       flash[:error] = I18n.t('exportling.export.download.incomplete')
       redirect_to root_path
+    elsif @export.file_missing?
+      flash[:error] = I18n.t('exportling.export.download.missing')
+      redirect_to root_path
     else
-      send_file_options = {
-        disposition:  'attachment',
-        x_sendfile:   true,
-        filename:     @export.file_name
-      }
-      send_file @export.output.path, send_file_options
+      send_file @export.output.path, @export.send_file_options
     end
   end
 

@@ -5,3 +5,4 @@ en:
       download:
         not_found: Could not find export to download
         incomplete: Export cannot be downloaded until it is complete. Please try again later.
+        missing: Export cannot be downloaded as the file is missing.

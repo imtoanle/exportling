@@ -30,6 +30,22 @@ class Exportling::Export < ActiveRecord::Base
     status == 'processing'
   end
 
+  def file_missing?
+    !file_exists?
+  end
+
+  def file_exists?
+    File.exists?(output.path)
+  end
+
+  def send_file_options
+    {
+      disposition:  'attachment',
+      x_sendfile:   true,
+      filename:     file_name
+    }
+  end
+
   def file_name
     "#{id}_#{name.parameterize}_#{created_at.strftime('%Y-%m-%d')}.#{file_type}"
   end
@@ -48,7 +64,7 @@ class Exportling::Export < ActiveRecord::Base
 
   # Perform the export
   def perform!
-    worker_class.perform_async(id)
+    worker_class.perform(id)
   end
 
   # Perform the export as a background job with Sidekiq
