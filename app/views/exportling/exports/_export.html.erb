@@ -5,6 +5,7 @@
   <td><%= export.file_type %></td>
   <td><%= export.created_at %></td>
   <td><%= export.updated_at %></td>
+  <td><%= export.elapsed %></td>
   <td><%= export.status.capitalize %></td>
   <td><% if export.completed? %>
     <%= link_to 'Download', download_export_path(export) %><% end %>

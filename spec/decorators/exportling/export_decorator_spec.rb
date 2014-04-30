@@ -26,4 +26,10 @@ describe Exportling::ExportDecorator do
     end
   end
 
+  describe 'elapsed time' do
+    before do
+      export.started_at = Time.zone.now
+      export.completed_at = 1.hour.from_now
+    end
+  end
 end

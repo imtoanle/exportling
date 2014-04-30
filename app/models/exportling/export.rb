@@ -30,6 +30,10 @@ class Exportling::Export < ActiveRecord::Base
     status == 'processing'
   end
 
+  def processed?
+    %w{failed completed}.include?(status)
+  end
+
   def file_missing?
     !file_exists?
   end
@@ -51,15 +55,18 @@ class Exportling::Export < ActiveRecord::Base
   end
 
   def set_processing!
-    update_attributes(status: 'processing')
+    update_attributes(status: 'processing',
+                      started_at: Time.zone.now)
   end
 
   def complete!
-    update_attributes(status: 'completed')
+    update_attributes(status: 'completed',
+                      completed_at: Time.zone.now)
   end
 
   def fail!
-    update_attributes(status: 'failed')
+    update_attributes(status: 'failed',
+                      completed_at: Time.zone.now)
   end
 
   # Perform the export

@@ -2,6 +2,8 @@ en:
   exportling:
     export:
       invalid_attributes: Please ensure the export form supplies all required attributes.
+      elapsed_fast: Less than a second
+      elapsed_created: '-'
       download:
         not_found: Could not find export to download
         incomplete: Export cannot be downloaded until it is complete. Please try again later.

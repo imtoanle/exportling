@@ -11,18 +11,20 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140429071833) do
+ActiveRecord::Schema.define(version: 20140430003727) do
 
   create_table "exportling_exports", force: true do |t|
     t.integer  "owner_id"
-    t.string   "klass",                          null: false
-    t.string   "status",     default: "created", null: false
-    t.string   "file_type",                      null: false
+    t.string   "klass",                            null: false
+    t.string   "status",       default: "created", null: false
+    t.string   "file_type",                        null: false
     t.string   "output"
     t.text     "params"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "name",       default: "",        null: false
+    t.string   "name",         default: "",        null: false
+    t.datetime "started_at"
+    t.datetime "completed_at"
   end
 
   create_table "houses", force: true do |t|
