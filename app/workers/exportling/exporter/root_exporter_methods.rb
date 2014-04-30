@@ -35,7 +35,7 @@ module Exportling
       # Save the generated file against the export object
       @export.transaction do
         @export.output = @temp_export_file
-        @export.save
+        @export.save!
         @export.complete!
       end
     end
