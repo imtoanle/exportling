@@ -41,10 +41,14 @@ module Exportling
     # If there was an issue during the export process, make sure we fail the export
     # Not implemented error will be raised if the export classes haven't been set up properly
     rescue ::StandardError, ::NotImplementedError => e
-      # TODO: Log error somewhere useful (Allow main app to specify logging mechanism)
-      p "Export Failed! #{e.message}"
-      p e.backtrace
+      log_error(e)
       @export.fail! if @export
+    end
+
+    def log_error(exception)
+      if defined? NewRelic
+        NewRelic::Agent.agent.error_collector.notice_error(exception)
+      end
     end
 
     # Use model from export object, and pass query params to it
