@@ -1,6 +1,7 @@
 en:
   exportling:
     export:
+      retry: Export has been scheduled to be retried
       invalid_attributes: Please ensure the export form supplies all required attributes.
       elapsed_fast: Less than a second
       elapsed_created: '-'

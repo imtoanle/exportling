@@ -69,9 +69,10 @@ class Exportling::ExportsController < Exportling::ApplicationController
     @export = Exportling::Export.find_by(id: params[:id],
                                          owner_id: _current_export_owner.id)
     @export.status = 'created'
-    @exports.save
+    @export.save
     @export.perform_async!
 
+    flash[:message] = I18n.t('exportling.export.retry')
     redirect_to root_path
   end
 
