@@ -1,7 +1,7 @@
 require "exportling/engine"
 
 module Exportling
-  mattr_accessor :export_owner_class, :export_owner_method,
+  mattr_accessor  :export_owner_class, :export_owner_method,
                   :base_storage_directory, :raise_on_fail
 
   # Allow the base application to set the owner of the export

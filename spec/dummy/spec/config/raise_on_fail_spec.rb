@@ -3,9 +3,10 @@ require 'spec_helper'
 describe 'Exportling Config' do
   let(:exporter_class)  { HouseCsvExporter }
   let(:exporter)        { exporter_class.new }
-  let(:export)          { create(:export, klass: exporter_class.to_s, status: 'created') }
+  let(:export) do
+    create(:export, klass: exporter_class.to_s, status: 'created')
+  end
   before  { allow(Exportling).to receive(:raise_on_fail) { raise_on_fail } }
-
 
   describe 'raise_on_fail' do
     shared_context :fail_export do

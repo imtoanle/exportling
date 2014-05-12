@@ -18,7 +18,6 @@ describe Exportling::ExporterDefaultQuery do
     relation_class MockRelation
   end
 
-
   describe 'initial state validation' do
     shared_context :invalid_initial_state do
       it 'raises an error' do
