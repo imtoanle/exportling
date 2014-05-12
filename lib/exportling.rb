@@ -1,7 +1,8 @@
 require "exportling/engine"
 
 module Exportling
-  mattr_accessor :export_owner_class, :export_owner_method, :base_storage_directory
+  mattr_accessor  :export_owner_class, :export_owner_method,
+                  :base_storage_directory, :raise_on_fail
 
   # Allow the base application to set the owner of the export
   def self.export_owner_class
@@ -11,6 +12,11 @@ module Exportling
   # Allow base application to define the method to find the current owner
   def self.export_owner_method
     @@export_owner_method
+  end
+
+  # When an export fails, should the exporter raise the error
+  def self.raise_on_fail
+    @@raise_on_fail || false
   end
 
   # Allow the base application to set the export directory

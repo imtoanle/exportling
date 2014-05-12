@@ -1,13 +1,6 @@
 require 'spec_helper'
 
 describe Exportling::Exporter do
-
-  describe 'abstract_methods' do
-    specify { expect(described_class).to define_abstract_method :on_start }
-    specify { expect(described_class).to define_abstract_method :on_entry }
-    specify { expect(described_class).to define_abstract_method :on_finish }
-  end
-
   describe '.perform' do
     let(:export_id) { 1 }
     it 'calls perform on its instance' do

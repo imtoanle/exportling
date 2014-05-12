@@ -44,12 +44,6 @@ describe Exportling::ExportsController do
   shared_context :invalid_export_params do
     let(:p_klass)             { nil }
     let(:p_file_type)         { nil }
-    let(:mock_error_message)  { 'Export Invalid' }
-
-    before do
-      expect_export = expect_any_instance_of(Exportling::Export)
-      expect_export.to receive(:invalid_atributes_message) { mock_error_message }
-    end
   end
 
   describe 'GET #new' do
@@ -74,13 +68,20 @@ describe Exportling::ExportsController do
     context 'given invalid params' do
       include_context :invalid_export_params
       it 'raises an error' do
-        expect { get :new, params }.to raise_error(ArgumentError, mock_error_message)
+        expect { get :new, params }.to raise_error(ArgumentError)
       end
     end
   end
 
   describe 'POST #create' do
-    let(:params) { { klass: p_klass, params: p_params, file_type: p_file_type } }
+    let(:params) do
+      {
+        klass: p_klass,
+        name: p_klass,
+        params: p_params,
+        file_type: p_file_type
+      }
+    end
     let(:p_params)    { { 'foo' => 'bar' } }
 
     context 'given valid params' do
@@ -114,7 +115,7 @@ describe Exportling::ExportsController do
     context 'given invalid params' do
       include_context :invalid_export_params
       it 'raises an error' do
-        expect { post :create, export: params }.to raise_error(ArgumentError, mock_error_message)
+        expect { post :create, export: params }.to raise_error(ArgumentError)
       end
     end
   end
