@@ -13,6 +13,7 @@ module Exportling
     include ClassInstanceVariables
     include RootExporterMethods
     include ChildExporterMethods
+    include CommonMethods
 
     def initialize
       @export_entries ||= []
