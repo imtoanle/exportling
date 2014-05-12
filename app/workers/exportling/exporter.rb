@@ -30,6 +30,7 @@ module Exportling
       return if @export.completed?
 
       @export.set_processing!
+      @export_entries ||= []
 
       # Run the rest of the export as if we are a root or child exporter, depending on perform arguments
       if @child
@@ -83,24 +84,24 @@ module Exportling
     # By default, just saves the entry in an array
     # Often overwritten in the extending class
     def save_entry(export_data, associated_data = nil)
-      @export_entries ||= []
       @export_entries << export_data
     end
 
     # Abstract Methods ================================================================
-    # The temp file is an instance variable, so accepting it as an argument isn't really needed
-    # However, requiring it to be accepted as a param by on_start helps enforce its use by extending classes
+    # Called at the start of perform
+    # Use this method to accept the temp file, and set up anything required
+    #  for this export
     def on_start(temp_file = nil)
-      raise ::NotImplementedError, 'on_start must be implemented in the extending class'
     end
 
+    # Called at the end of perform. Use this to complete file writing +
+    #  any other teardown required
     def on_finish
-      raise ::NotImplementedError, 'on_finish must be implemented in the extending class'
     end
 
     # Called for each entry of perform
+    # If writing data to a file, do so here
     def on_entry(export_data, associated_data = nil)
-      raise ::NotImplementedError, 'Handling of each entry (on_entry) must be performed in the extending class'
     end
   end
 end

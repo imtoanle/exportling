@@ -92,7 +92,7 @@ The query object is used to pull the model information from the database. This o
 You can see more examples of exporter query objects in the source, under `spec/dummy/app/query`.
 
 ### Exporter
-The exporter class is responsible for defining the fields to be exported, the query object to fetch the data, and the handling of the actual data export. When the export starts, the `on_start` method is called, and is passed a TempFile to write to. Similarly, the `on_finish` method is called at the end of the export. Finally, for each item found, `on_entry` is called, with the model and associated data passed as an argument.
+The exporter class is responsible for defining the fields to be exported, the query object to fetch the data, and the handling of the actual data export. When the export starts, the `on_start` method is called, and is passed a TempFile to write to. Similarly, the `on_finish` method is called at the end of the export. Finally, for each item found, `on_entry` is called, with the model and associated data passed as an argument. Note that these methods only need to be defined for an exporter that is actually responsible for writing to a file. Child exporters will often omit declaration of these methods.
 
     class HouseCsvExporter < Exportling::Exporter
       # Specify the fields we want in the final export
@@ -206,15 +206,6 @@ Creating the most basic room exporter will allow us to create the CSV we want by
       export_field :house_id
 
       query_class_name 'RoomExporterQuery'
-
-      def on_start(temp_file=nil)
-      end
-
-      def on_entry(export_data, associated_data=nil)
-      end
-
-      def on_finish
-      end
     end
 
 If this exporter is used on its own, it will not write anything to an export file, as none of its callback methods are actually processing the data. However, its default behaviour means it will at least store all found entries in an accessible instance variable.
@@ -286,15 +277,6 @@ Define this exporter as the most basic possible
       export_field :house_id
 
       query_class_name 'RoomExporterQuery'
-
-      def on_start(temp_file=nil)
-      end
-
-      def on_entry(export_data, associated_data=nil)
-      end
-
-      def on_finish
-      end
     end
 
 Alternatively, as only names are needed in the export, you could overwrite `save_entry` to only save room names, rather than model data for the entire room.
@@ -338,13 +320,12 @@ Again this behaviour is made possible by altering the `HouseCsvExporter`'s `on_e
 To allow the user to request an export, you need to create a form to send export information to to the export engine. Assuming you have exportling mounted as `:export_engine`, and wish to export a single `House` object.
 
     <%= form_tag("#{export_engine.exports_path}/new", method: :get) do -%>
+      <!-- Give the export a name that isn't the default (Exporter class name by default)-->
+      <%= hidden_field_tag :name, 'House CSV' %>
       <!-- The exporter class that will be the entry point of the export -->
       <%= hidden_field_tag :klass, 'HouseCsvExporter' %>
-      <!-- FIXME: This is super insecure. Actual owner should be set in controller -->
-      <%= hidden_field_tag :owner_id, user.id %>
       <!-- All params sent will be saved in the export object, and used by the exporters to find objects to export -->
       <%= hidden_field_tag 'params[house][id]', [house.id] %>
-      <!-- NOTE: File Type is not currently used by the exporter, and will probably be removed (required for now) -->
       <%= hidden_field_tag :file_type, 'csv' %>
       <%= submit_tag 'Export CSV' %>
     <% end -%>
