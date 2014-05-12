@@ -24,7 +24,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
                                      params: params[:params],
                                      file_type: params[:file_type])
     unless @export.valid?
-      raise ArgumentError, @export.invalid_attributes_message
+      raise ArgumentError, @export.decorate.invalid_attributes_message
     end
   end
 
@@ -37,7 +37,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
     @export.owner  = _current_export_owner
 
     unless @export.valid?
-      raise ArgumentError, @export.invalid_attributes_message
+      raise ArgumentError, @export.decorate.invalid_attributes_message
     end
 
     # Save the export and start it processing
