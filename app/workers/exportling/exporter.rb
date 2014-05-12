@@ -14,6 +14,10 @@ module Exportling
     include RootExporterMethods
     include ChildExporterMethods
 
+    def initialize
+      @export_entries ||= []
+    end
+
     # Worker Methods ============================================================
     # Shortcut to instance peform method
     def self.perform(export_id, options = {})
@@ -30,7 +34,6 @@ module Exportling
       return if @export.completed?
 
       @export.set_processing!
-      @export_entries ||= []
 
       # Run the rest of the export as if we are a root or child exporter, depending on perform arguments
       if @child
@@ -44,6 +47,7 @@ module Exportling
     rescue ::StandardError, ::NotImplementedError => e
       log_error(e)
       @export.fail! if @export
+      raise e if Exportling.raise_on_fail
     end
 
     def log_error(exception)

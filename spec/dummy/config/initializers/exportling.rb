@@ -6,3 +6,6 @@ Exportling.export_owner_method = :current_export_owner
 
 # Set where exports are stored
 Exportling.base_storage_directory = 'custom_exportling_directory'
+
+# Don't raise on fail (will be set to true for specific specs)
+Exportling.raise_on_fail = false

@@ -54,7 +54,14 @@ Configure Exportling in your application
     # (Optional) Set the export save directory ('exportling' by default)
     # All files will be saved under custom_exportling_directory/exports/owner_id/
     Exportling.base_storage_directory = 'custom_exportling_directory'
-
+    
+    # (Optional) Set exportling to bubble errors up to the main app
+    # This option defaults to false. If you want to handle export failures in your app, set this to true.
+    # Additionally, setting this to true can help when creating exporters, as any errors will be
+    # raised, rather then silently logged. The logging and setting the export to failed are not
+    # affected by this option
+    Exportling.raise_on_fail = true
+    
 Sidekiq Queue
 
 Configure Sidekiq in your application. If you are already using Sidekiq, this is simply a matter of adding the queue, `exportling_exports` to your config.
