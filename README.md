@@ -89,6 +89,16 @@ The query object is used to pull the model information from the database. This o
       end
     end
 
+Note that the above query object is a common case, where one of the keys of `options` is used, and a relation (e.g. `House`) is queried, passing each object back to the argument block. If this type of query object is required, it may be written in full, as above, or use `Exportling::ExporterDefaultQuery`. If this is used, the above query object may be simplified to the following:
+
+    class HouseExporterQuery
+      include Exportling::ExporterDefaultQuery
+      query_options_key :house
+      relation_class    House
+    end
+    
+`Exportling::ExporterDefaultQuery` allows the options key and relation class to be defined, and defines the required initialize and find_each methods. The options key and relation class may be accessed in the query object using `key` and `relation_klass` respectively.
+
 You can see more examples of exporter query objects in the source, under `spec/dummy/app/query`.
 
 ### Exporter
