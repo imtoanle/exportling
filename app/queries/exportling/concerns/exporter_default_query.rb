@@ -21,8 +21,9 @@ module Exportling
       delegate :key, :relation_klass, to: :class
 
       # Default behaviour for an exporter query object
-      def initialize(options = {})
+      def initialize(options, owner)
         @options = options
+        @owner   = owner
         validate_initial_state
       end
 
@@ -43,14 +44,14 @@ module Exportling
       def validate_key_set
         return unless key.blank?
         error_message = 'Use query_options_key :foo to define the key that'\
-                        'should be used in the query'
+                        ' should be used in the query'
         fail KeyMissingError, error_message
       end
 
       def validate_relation_set
         return unless relation_klass.blank?
         error_message = 'Use relation_class :foo to define the relation to'\
-                        'query'
+                        ' query'
         fail RelationMissingError, error_message
       end
     end

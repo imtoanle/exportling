@@ -26,7 +26,7 @@ describe Exportling::ExporterDefaultQuery do
     end
 
     context 'when query_options_key blank' do
-      subject { DefaultQueryNoneSet.new }
+      subject { DefaultQueryNoneSet.new(double, double) }
       let(:expected_error) do
         Exportling::ExporterDefaultQuery::KeyMissingError
       end
@@ -36,7 +36,7 @@ describe Exportling::ExporterDefaultQuery do
 
     context 'when query_options_key provided' do
       context 'but relation_class blank' do
-        subject { DefaultQueryOptionKeySet.new }
+        subject { DefaultQueryOptionKeySet.new(double, double) }
         let(:expected_error) do
           Exportling::ExporterDefaultQuery::RelationMissingError
         end
@@ -45,7 +45,7 @@ describe Exportling::ExporterDefaultQuery do
       end
 
       context 'and relation_class provided' do
-        subject { DefaultQueryKeyAndRelationSet.new }
+        subject { DefaultQueryKeyAndRelationSet.new(double, double) }
         it 'does not raise an error' do
           expect { subject }.to_not raise_error
         end

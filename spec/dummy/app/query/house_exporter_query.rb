@@ -1,6 +1,6 @@
 # Query object for the house exporter
 class HouseExporterQuery
-  def initialize(options)
+  def initialize(options, owner)
     @options  = options
   end
 
