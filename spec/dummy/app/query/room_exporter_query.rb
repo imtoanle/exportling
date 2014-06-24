@@ -1,7 +1,7 @@
 # Query object for the room exporter
 class RoomExporterQuery
   # When this query object is initialised by the house exporter, it may pass a scoped relation
-  def initialize(options)
+  def initialize(options, owner)
     @options  = options
   end
 

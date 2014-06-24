@@ -53,8 +53,9 @@ describe Exportling::Exporter do
     let(:exporter)          { HouseCsvExporter.new }
     let(:query_class_name)  { exporter.query_class_name }
     let(:query_class)       { query_class_name.constantize }
+    let(:export)            { double('export', params: {}, owner: double) }
 
-    before { exporter.instance_variable_set(:@export, double('export', params: {})) }
+    before { exporter.instance_variable_set(:@export, export) }
 
     it 'calls #find_each of the query object' do
       expect_any_instance_of(query_class).to receive(:find_each)
@@ -70,8 +71,9 @@ describe Exportling::Exporter do
       let(:export)          { create(:export, klass: exporter_class.to_s, params: export_params) }
       let(:query_class)     { exporter.query_class_name.constantize }
 
-      it 'passes merged params to the query object' do
-        expect(query_class).to receive(:new).with(merged_params) { double('QueryObject', find_each: nil ) }
+      it 'passes merged params and owner to the query object' do
+        expect(query_class).to receive(:new).with(merged_params, export.owner).
+          and_return(double('QueryObject', find_each: nil))
         exporter.perform(export.id, options)
       end
     end

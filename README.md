@@ -45,7 +45,7 @@ Configure Exportling in your application
 
     # (Required) Set the export owner class (used to scope exports to a parent)
     Exportling.export_owner_class = 'User'
-    
+
     # (Required) Set the method to find the current owner class.
     # This method must be available to the main application's ApplicationController
     # E.g. If using devise, this would be set to
@@ -54,14 +54,14 @@ Configure Exportling in your application
     # (Optional) Set the export save directory ('exportling' by default)
     # All files will be saved under custom_exportling_directory/exports/owner_id/
     Exportling.base_storage_directory = 'custom_exportling_directory'
-    
+
     # (Optional) Set exportling to bubble errors up to the main app
     # This option defaults to false. If you want to handle export failures in your app, set this to true.
     # Additionally, setting this to true can help when creating exporters, as any errors will be
     # raised, rather then silently logged. The logging and setting the export to failed are not
     # affected by this option
     Exportling.raise_on_fail = true
-    
+
 Sidekiq Queue
 
 Configure Sidekiq in your application. If you are already using Sidekiq, this is simply a matter of adding the queue, `exportling_exports` to your config.
@@ -81,11 +81,12 @@ Exportling currently allows a developer to specify a simple nested exports. Expo
 To export a model, you will need to define two classes
 
 ### Query
-The query object is used to pull the model information from the database. This object must accept query options when initialized, and must have a `find_each` method that accepts a block.
+The query object is used to pull the model information from the database. This object must accept query options and the export owner when initialized, and must have a `find_each` method that accepts a block.
 
     class HouseExporterQuery
-      def initialize(options)
+      def initialize(options, export_owner)
         @options  = options
+        @owner    = export_owner
       end
 
       def find_each(&block)
@@ -103,8 +104,17 @@ Note that the above query object is a common case, where one of the keys of `opt
       query_options_key :house
       relation_class    House
     end
-    
+
 `Exportling::ExporterDefaultQuery` allows the options key and relation class to be defined, and defines the required initialize and find_each methods. The options key and relation class may be accessed in the query object using `key` and `relation_klass` respectively.
+
+The export owner is passed to the query object, as it allows the returned objects to be scoped to the export owner, without needing to pass their ID via params. Following the previous example, if we want to limit the houses to the current export owner:
+
+    def find_each(&block)
+      query_options = @options[:house]
+      if query_options.present?
+        @owner.houses.where(query_options).find_each(&block)
+      end
+    end
 
 You can see more examples of exporter query objects in the source, under `spec/dummy/app/query`.
 
@@ -202,7 +212,7 @@ Common to both approaches is the requirement that we define the room association
 Finally, to actually fetch the room data, we need to create exporter and query objects for `Room`. The query object will be the same, regardless of exporter created, and will be defined as shown.
 
     class RoomExporterQuery
-      def initialize(options)
+      def initialize(options, owner)
         @options  = options
       end
 

@@ -5,7 +5,7 @@
 # e.g. export.params # => { q: { name_eq: 'a name' } }
 
 class RansackExporterQueryExample
-  def initialize(options = {})
+  def initialize(options, owner)
     @options = options
   end
 
