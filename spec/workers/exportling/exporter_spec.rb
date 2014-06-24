@@ -72,8 +72,8 @@ describe Exportling::Exporter do
       let(:query_class)     { exporter.query_class_name.constantize }
 
       it 'passes merged params and owner to the query object' do
-        expect(query_class).to receive(:new).with(merged_params, export.owner)
-          .and_return(double('QueryObject', find_each: nil ))
+        expect(query_class).to receive(:new).with(merged_params, export.owner).
+          and_return(double('QueryObject', find_each: nil))
         exporter.perform(export.id, options)
       end
     end
