@@ -23,6 +23,8 @@ Gem::Specification.new do |s|
   s.add_dependency 'hash_to_hidden_fields', '~> 2.0.1'
   s.add_dependency 'draper', '~> 1.3.0'
   s.add_dependency 'ransack'
+  s.add_dependency 'hashie', '~> 3.2.0'
+  s.add_dependency 'hashie_rails', '~> 0.0.1'
 
   s.add_development_dependency "rspec-rails", '~> 3.0.0.beta'
   s.add_development_dependency 'factory_girl_rails', '~> 4.4.1'

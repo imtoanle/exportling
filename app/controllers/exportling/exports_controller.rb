@@ -14,27 +14,17 @@ class Exportling::ExportsController < Exportling::ApplicationController
   end
 
   def new
-    name = params[:name] || params[:klass]
     # TODO: Improve how klass is specified
     #        The current method of including it in hidden fields opens it
     #        up to user tampering
-    @export = Exportling::Export.new(name: name,
-                                     klass: params[:klass],
-                                     owner_id: _current_export_owner.id,
-                                     params: params[:params],
-                                     file_type: params[:file_type])
+    @export = ExportCreator.new(export_params, _current_export_owner).perform
     unless @export.valid?
       fail ArgumentError, @export.decorate.invalid_attributes_message
     end
   end
 
   def create
-    @export = Exportling::Export.new(export_params)
-
-    # Hashes are not permitted by strong parameters, so we need to pull the params out separately
-    # See: https://github.com/rails/strong_parameters#permitted-scalar-values
-    @export.params = params[:export][:params]
-    @export.owner  = _current_export_owner
+    @export = ExportCreator.new(export_params, _current_export_owner).perform
 
     unless @export.valid?
       fail ArgumentError, @export.decorate.invalid_attributes_message
@@ -77,8 +67,6 @@ class Exportling::ExportsController < Exportling::ApplicationController
   end
 
   def export_params
-    params.require(:export).permit(
-      :klass, :file_type, :name
-    )
+    ExportRequest.new(params.require(:export))
   end
 end

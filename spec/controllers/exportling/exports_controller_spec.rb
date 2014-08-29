@@ -4,8 +4,8 @@ describe Exportling::ExportsController do
   # Use Exportling's routes
   routes { Exportling::Engine.routes }
 
-  let(:current_user)    { create(:user) }
-  let(:other_user)      { create(:user) }
+  let(:current_user) { create(:user) }
+  let(:other_user) { create(:user) }
 
   before do
     allow_any_instance_of(ApplicationController).to receive(:current_export_owner) { current_user }
@@ -42,18 +42,18 @@ describe Exportling::ExportsController do
   end
 
   shared_context :invalid_export_params do
-    let(:p_klass)             { nil }
-    let(:p_file_type)         { nil }
+    let(:p_klass) { nil }
+    let(:p_file_type) { nil }
   end
 
   describe 'GET #new' do
-    let(:params)    { { klass: p_klass, params: p_params, file_type: p_file_type } }
-    let(:p_params)  { { 'foo' => 'bar' } }
+    let(:params) { { klass: p_klass, params: p_params, file_type: p_file_type } }
+    let(:p_params) { { 'foo' => 'bar' } }
 
     context 'given valid params' do
-      before { get :new, params }
+      before { get :new, export: params }
 
-      let(:p_klass)     { 'HouseCsvExporter' }
+      let(:p_klass) { 'HouseCsvExporter' }
       let(:p_file_type) { 'csv' }
 
       it 'renders the :new view' do
@@ -68,7 +68,7 @@ describe Exportling::ExportsController do
     context 'given invalid params' do
       include_context :invalid_export_params
       it 'raises an error' do
-        expect { get :new, params }.to raise_error(ArgumentError)
+        expect { get :new, export: params }.to raise_error(ArgumentError)
       end
     end
   end
@@ -82,7 +82,7 @@ describe Exportling::ExportsController do
         file_type: p_file_type
       }
     end
-    let(:p_params)    { { 'foo' => 'bar' } }
+    let(:p_params) { { 'foo' => 'bar' } }
 
     context 'given valid params' do
       before do
@@ -91,7 +91,7 @@ describe Exportling::ExportsController do
         post :create, export: params
       end
 
-      let(:p_klass)     { 'HouseCsvExporter' }
+      let(:p_klass) { 'HouseCsvExporter' }
       let(:p_file_type) { 'csv' }
 
       it 'redirects to the :index view' do

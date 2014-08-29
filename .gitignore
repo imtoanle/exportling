@@ -8,5 +8,6 @@ spec/dummy/tmp/
 spec/dummy/.sass-cache
 spec/dummy/exportling/export/
 exports
+Gemfile.lock
 *.gem
 sidekiq.pid
