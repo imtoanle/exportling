@@ -1,7 +1,8 @@
 # Exportling
 
-[![Build Status](https://magnum.travis-ci.com/jobready/activebi-rails.png?token=rpAHEL3fvHDpfBeDNS3M&branch=develop)](https://magnum.travis-ci.com/jobready/activebi-rails)
+[![Build status](https://badge.buildbox.io/19d787ed343a2c55f56553bf9cb3bd12bb554323c431aa9767.svg)](https://buildbox.io/accounts/jobready/projects/exportling)
 [![Code Climate](https://codeclimate.com/repos/52d855f26956805705008510/badges/ca176e98fe06d57afc9f/gpa.png)](https://codeclimate.com/repos/52d855f26956805705008510/feed)
+[![Test Coverage](https://codeclimate.com/github/jobready/exportling/badges/coverage.svg)](https://codeclimate.com/github/jobready/exportling)
 
 A simple rails engine for exporting records
 
