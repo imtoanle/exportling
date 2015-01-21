@@ -2,7 +2,8 @@ require "exportling/engine"
 
 module Exportling
   mattr_accessor  :export_owner_class, :export_owner_method,
-                  :base_storage_directory, :raise_on_fail
+                  :base_storage_directory, :raise_on_fail,
+                  :authorization_mechanism
 
   # Allow the base application to set the owner of the export
   def self.export_owner_class
@@ -23,5 +24,11 @@ module Exportling
   # Defaults to Rails.root/exportling
   def self.base_storage_directory
     @@base_storage_directory || 'exportling'
+  end
+
+  # Allow base application to define which authorization mechanism (e.g. :pundit)
+  # to use
+  def self.authorization_mechanism
+    @@authorization_mechanism || nil
   end
 end

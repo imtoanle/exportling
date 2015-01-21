@@ -56,6 +56,10 @@ Configure Exportling in your application
     # All files will be saved under custom_exportling_directory/exports/owner_id/
     Exportling.base_storage_directory = 'custom_exportling_directory'
 
+	# (Optional) Set the authorization mechanism for ensuring exports are allowed
+	# Only :pundit is supported currently.
+    Exportling.authorization_mechanism = :pundit
+
     # (Optional) Set exportling to bubble errors up to the main app
     # This option defaults to false. If you want to handle export failures in your app, set this to true.
     # Additionally, setting this to true can help when creating exporters, as any errors will be
@@ -349,14 +353,48 @@ To allow the user to request an export, you need to create a form to send export
 
     <%= form_tag("#{export_engine.exports_path}/new", method: :get) do -%>
       <!-- Give the export a name that isn't the default (Exporter class name by default)-->
-      <%= hidden_field_tag :name, 'House CSV' %>
+      <%= hidden_field_tag 'export[name]', 'House CSV' %>
       <!-- The exporter class that will be the entry point of the export -->
-      <%= hidden_field_tag :klass, 'HouseCsvExporter' %>
+      <%= hidden_field_tag 'export[klass]', 'HouseCsvExporter' %>
       <!-- All params sent will be saved in the export object, and used by the exporters to find objects to export -->
-      <%= hidden_field_tag 'params[house][id]', [house.id] %>
-      <%= hidden_field_tag :file_type, 'csv' %>
+      <%= hidden_field_tag 'export[params][house][id]', [house.id] %>
+      <%= hidden_field_tag 'export[file_type]', 'csv' %>
       <%= submit_tag 'Export CSV' %>
     <% end -%>
+
+## Authorization
+If you want to restrict which users can perform which exports, you can specify which mechanism to use in the exporting config. At present, only Pundit is supported. Cancan checks are automatically skipped (using `:skip_authorization_check`).
+
+### Pundit
+First, specify Pundit as your mechanism in your exporting config (config/initializers/exportling.rb).
+
+`Exportling.authorization_mechanism = :pundit`
+
+Next, create an export policy for Pundit. This will depend on your application's requirements, but a reasonable example is the following:
+
+    # Authorization of new/create actions are handled in exportling itself
+    class Exportling::ExportPolicy < ApplicationPolicy
+      # Exports are automatically scoped to the creating user in exportling
+      class Scope < Scope
+        def resolve
+          scope
+        end
+      end
+
+      # Allow a user to download any export they have created
+      def download?
+        record.owner == user
+      end
+
+      # Rules are same for retrying and downloading an export
+      alias_method :retry?, :download?
+    end
+
+Finally, add a line to your exporters to let exporting know which class to check the `:export?` policy against when performing an export. Note that this line only needs to be present in root exporters, as these are the entry point of the export. In the example below, we assume you have a `HousePolicy` class, with an `export?` method, which will be checked when attempting to create the export.
+
+    # Specify the class we should authorize the export on for this user
+    authorize_on_class_name 'House'
+
 
 ## Commonly Useful Methods
 ### Exporter

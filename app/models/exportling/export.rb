@@ -14,6 +14,13 @@ class Exportling::Export < ActiveRecord::Base
     klass.constantize
   end
 
+  # Which class should we try to authorize export permissions against?
+  # Only needed when using Pundit
+  def authorize_on_class
+    class_name = worker_class.authorize_on_class_name
+    class_name.constantize if class_name.present?
+  end
+
   def completed?
     status == 'completed'
   end

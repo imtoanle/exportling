@@ -17,8 +17,6 @@ require 'factory_girl_rails'
 require 'byebug'
 require 'database_cleaner'
 require 'sidekiq/testing'
-require 'hashie'
-require 'hashie_rails'
 
 Rails.backtrace_cleaner.remove_silencers!
 
@@ -32,7 +30,7 @@ RSpec.configure do |config|
   config.order = "random"
 
   # Pretty up rspec output somewhat
-  config.color_enabled = true
+  config.color = true
   config.formatter = :documentation
 
   # Make sure we clear Sidekiq jobs between tests

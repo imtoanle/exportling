@@ -3,6 +3,7 @@ class HouseCsvExporter < Exportling::Exporter
   export_field :price
   export_field :square_meters
 
+  authorize_on_class_name 'House'
   query_class_name 'HouseExporterQuery'
 
   export_association rooms: {

@@ -1,5 +1,7 @@
 # TODO: Ensure all exports scoped to owner
 class Exportling::ExportsController < Exportling::ApplicationController
+  before_action :load_and_authorize_export, only: [:download, :retry]
+
   decorates_assigned :export
 
   def index
@@ -7,9 +9,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
     # query.merge({ owner_id_eql: current_export_owner.id })
     # @query = Exportling::Export.ransack(query)
     # exports = @query.result.page(params[:page] || 1)
-    exports  = Exportling::Export.where(owner_id: _current_export_owner.id)
-                                 .order(created_at: :desc)
-                                 .page(params[:page] || 1)
+    exports = using_pundit ? policy_scope(exports_scope) : exports_scope
     @exports = Exportling::ExportsDecorator.decorate(exports)
   end
 
@@ -18,6 +18,8 @@ class Exportling::ExportsController < Exportling::ApplicationController
     #        The current method of including it in hidden fields opens it
     #        up to user tampering
     @export = ExportCreator.new(export_params, _current_export_owner).perform
+    authorize_new_export
+
     unless @export.valid?
       fail ArgumentError, @export.decorate.invalid_attributes_message
     end
@@ -25,6 +27,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
 
   def create
     @export = ExportCreator.new(export_params, _current_export_owner).perform
+    authorize_new_export
 
     unless @export.valid?
       fail ArgumentError, @export.decorate.invalid_attributes_message
@@ -38,9 +41,6 @@ class Exportling::ExportsController < Exportling::ApplicationController
   end
 
   def download
-    @export = Exportling::Export.find_by(id: params[:id],
-                                         owner_id: _current_export_owner.id)
-
     if @export.nil?
       flash[:error] = I18n.t('exportling.export.download.not_found')
       redirect_to root_path
@@ -56,8 +56,6 @@ class Exportling::ExportsController < Exportling::ApplicationController
   end
 
   def retry
-    @export = Exportling::Export.find_by(id: params[:id],
-                                         owner_id: _current_export_owner.id)
     @export.status = 'created'
     @export.save
     @export.perform_async!
@@ -66,7 +64,27 @@ class Exportling::ExportsController < Exportling::ApplicationController
     redirect_to root_path
   end
 
+  private
+
+  def load_and_authorize_export
+    @export = Exportling::Export.find_by(id: params[:id],
+                                         owner_id: _current_export_owner.id)
+
+    authorize(@export) if using_pundit
+  end
+
+  def authorize_new_export
+    return unless using_pundit
+    authorize(@export.authorize_on_class, :export?)
+  end
+
   def export_params
     ExportRequest.new(params.require(:export))
+  end
+
+  def exports_scope
+    Exportling::Export.where(owner_id: _current_export_owner.id)
+                                     .order(created_at: :desc)
+                                     .page(params[:page] || 1)
   end
 end

@@ -11,6 +11,7 @@ module Exportling
       attr_accessor :export_field_names
       attr_accessor :export_associations
       attr_accessor :query_name
+      attr_accessor :authorize_on_name
 
       # This will allow the extending class to specify fields as:
       # export_field :field_name
@@ -45,6 +46,11 @@ module Exportling
       def query_class_name(klass_name = nil)
         self.query_name = klass_name unless klass_name.nil?
         query_name
+      end
+
+      def authorize_on_class_name(klass_name = nil)
+        self.authorize_on_name = klass_name unless klass_name.nil?
+        authorize_on_name
       end
     end
   end
