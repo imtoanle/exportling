@@ -16,7 +16,6 @@ describe Exportling::ExporterDefaultQuery do
     include Exportling::ExporterDefaultQuery
     query_options_key :mock_key
     relation_class MockRelation
-    allowed_finder_attrs [:id]
   end
 
   describe 'initial state validation' do
