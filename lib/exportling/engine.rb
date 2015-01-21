@@ -7,6 +7,8 @@ module Exportling
     require 'carrierwave'
     require 'hash_to_hidden_fields'
     require 'draper'
+    require 'hashie'
+    require 'hashie_rails'
 
     # Make sure our query objects are required
     config.to_prepare do
