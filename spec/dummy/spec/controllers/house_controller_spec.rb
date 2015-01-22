@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe HouseController do
+describe HouseController, type: :controller do
 
   describe "GET 'index'" do
     it "returns http success" do

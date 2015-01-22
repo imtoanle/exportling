@@ -11,4 +11,8 @@ class Exportling::ApplicationController < ApplicationController
   def _current_export_owner
     send(Exportling.export_owner_method)
   end
+
+  def using_pundit
+    Exportling.authorization_mechanism == :pundit
+  end
 end

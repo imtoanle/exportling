@@ -10,6 +10,29 @@ describe Exportling::Export do
     specify { expect(subject).to eq exporter_class }
   end
 
+  describe '#authorize_on_class' do
+    subject { export.authorize_on_class }
+
+    let(:worker_class) { double('Worker Class') }
+
+    before do
+      allow(export).to receive(:worker_class) { worker_class }
+      allow(worker_class).to receive(:authorize_on_class_name) { class_name }
+    end
+
+    context 'when class name provided' do
+      let(:class_name) { 'House' }
+
+      specify { expect(subject).to eq(House) }
+    end
+
+    context 'when class name omitted' do
+      let(:class_name) { nil }
+
+      specify { expect(subject).to be_nil }
+    end
+  end
+
   describe '#completed?' do
     subject { export.completed? }
     before  { export.update_attributes(status: status) }

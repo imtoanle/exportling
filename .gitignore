@@ -11,3 +11,4 @@ exports
 Gemfile.lock
 *.gem
 sidekiq.pid
+coverage
