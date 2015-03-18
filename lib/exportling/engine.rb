@@ -5,6 +5,7 @@ module Exportling
     # Any gems needed by the engine should be required here (as well as added to the gemspec)
     require 'sidekiq'
     require 'carrierwave'
+    require 'fog'
     require 'hash_to_hidden_fields'
     require 'draper'
     require 'hashie'

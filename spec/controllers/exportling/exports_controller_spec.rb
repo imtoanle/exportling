@@ -219,11 +219,9 @@ describe Exportling::ExportsController, type: :controller do
             subject
           end
 
-          it 'downloads the export' do
-            file_name = export.file_name
-            expect(response.content_type).to eq('text/csv')
-            expect_headers = expect(response.headers['Content-Disposition'])
-            expect_headers.to eq("attachment; filename=\"#{file_name}\"")
+          it 'redirects to uploaded file' do
+            assigned_export = assigns(:export)
+            expect(response).to redirect_to(assigned_export.output.url)
           end
         end
 
