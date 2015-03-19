@@ -51,7 +51,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
       flash[:error] = I18n.t('exportling.export.download.missing')
       redirect_to root_path
     else
-      send_file @export.output.path, @export.send_file_options
+      redirect_to  @export.output.url
     end
   end
 

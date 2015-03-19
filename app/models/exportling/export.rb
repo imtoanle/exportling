@@ -46,15 +46,7 @@ class Exportling::Export < ActiveRecord::Base
   end
 
   def file_exists?
-    File.exists?(output.path)
-  end
-
-  def send_file_options
-    {
-      disposition:  'attachment',
-      x_sendfile:   true,
-      filename:     file_name
-    }
+    output.file.try(:exists?)
   end
 
   def file_name

@@ -9,3 +9,5 @@ Exportling.base_storage_directory = 'custom_exportling_directory'
 
 # Don't raise on fail (will be set to true for specific specs)
 Exportling.raise_on_fail = false
+
+Exportling.s3_bucket_name = 'exportling_spec_directory'

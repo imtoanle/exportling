@@ -52,9 +52,11 @@ Configure Exportling in your application
     # E.g. If using devise, this would be set to
     Exportling.export_owner_method = :current_user
 
-    # (Optional) Set the export save directory ('exportling' by default)
-    # All files will be saved under custom_exportling_directory/exports/owner_id/
-    Exportling.base_storage_directory = 'custom_exportling_directory'
+    # (Required) Set the S3 Bucket Name (used to set fog directory)
+    #This option will either take a block which returns the S3 Bucket name
+    Exportling.s3_bucket_name = -> {"#{Apartment::Tenant.current_tenant.downcase.gsub(/\s/, '_')}-exportling-#{Rails.env}" }
+    # Or  the S3 Bucket name as String.
+    Exportling.s3_bucket_name = 'my_s3_bucket'
 
 	# (Optional) Set the authorization mechanism for ensuring exports are allowed
 	# Only :pundit is supported currently.

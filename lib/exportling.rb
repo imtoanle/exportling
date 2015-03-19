@@ -1,9 +1,9 @@
 require "exportling/engine"
 
 module Exportling
-  mattr_accessor  :export_owner_class, :export_owner_method,
-                  :base_storage_directory, :raise_on_fail,
-                  :authorization_mechanism
+  mattr_accessor :export_owner_class, :export_owner_method,
+    :base_storage_directory, :raise_on_fail,
+    :authorization_mechanism, :s3_bucket_name
 
   # Allow the base application to set the owner of the export
   def self.export_owner_class
@@ -30,5 +30,9 @@ module Exportling
   # to use
   def self.authorization_mechanism
     @@authorization_mechanism || nil
+  end
+
+  def self.s3_bucket_name
+    @@s3_bucket_name
   end
 end

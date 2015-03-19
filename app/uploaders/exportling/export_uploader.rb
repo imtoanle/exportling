@@ -3,18 +3,26 @@
 module Exportling
   class ExportUploader < CarrierWave::Uploader::Base
 
-    storage :file
+    storage :fog
 
-    def base_dir
-      "#{Rails.root}/#{Exportling.base_storage_directory}"
+    def fog_directory
+      if Exportling.s3_bucket_name.respond_to?(:call)
+        Exportling.s3_bucket_name.call
+      else
+        Exportling.s3_bucket_name
+      end
     end
 
     def store_dir
-      "#{base_dir}/exports/#{model.owner_id}"
+      "exports/#{model.owner_id}"
     end
 
     def cache_dir
-      "#{base_dir}/tmp/exports/#{model.owner_id}"
+      "#{Rails.root}/tmp/exportling/exports/#{model.owner_id}"
+    end
+
+    def fog_attributes
+      {'Content-Disposition' => 'attachment'}
     end
   end
 end
