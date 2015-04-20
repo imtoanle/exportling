@@ -21,7 +21,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'sidekiq', '~> 2.17.0'
   s.add_dependency 'kaminari', '~> 0.15.1'
   s.add_dependency 'hash_to_hidden_fields', '~> 2.0.1'
-  s.add_dependency 'draper', '~> 1.3.0'
+  s.add_dependency 'draper', '~> 2.1.0'
   s.add_dependency 'ransack'
   s.add_dependency 'hashie', '~> 3.2.0'
   s.add_dependency 'hashie_rails', '~> 0.0.1'
