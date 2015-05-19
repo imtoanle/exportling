@@ -15,10 +15,6 @@ module Exportling
     include ChildExporterMethods
     include CommonMethods
 
-    def initialize
-      @export_entries ||= []
-    end
-
     # Worker Methods ============================================================
     # Shortcut to instance peform method
     def self.perform(export_id, options = {})
@@ -37,7 +33,7 @@ module Exportling
       @export.set_processing!
 
       # Run the rest of the export as if we are a root or child exporter, depending on perform arguments
-      if @child
+      if child_export?
         perform_as_child
       else
         perform_as_root
@@ -87,10 +83,19 @@ module Exportling
       end
     end
 
+    # Is this exporter running as a child of another exporter?
+    def child_export?
+      !!@child
+    end
+
     # Caches the results of each entry
-    # By default, just saves the entry in an array
-    # Often overwritten in the extending class
+    # By default, just saves the entry in an array if this exporter is running
+    # as a child.
+    # May be overwritten in the extending class
     def save_entry(export_data, associated_data = nil)
+      return unless child_export?
+
+      @export_entries ||= []
       @export_entries << export_data
     end
 

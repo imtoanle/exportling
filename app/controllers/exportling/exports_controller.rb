@@ -75,6 +75,12 @@ class Exportling::ExportsController < Exportling::ApplicationController
 
   def authorize_new_export
     return unless using_pundit
+
+    if @export.authorize_on_class.nil?
+      msg = "You must pass a class name to authorize_on_class in your exporter"
+      raise ArgumentError, msg
+    end
+
     authorize(@export.authorize_on_class, :export?)
   end
 

@@ -260,9 +260,11 @@ Note that `associated_data` will be returned as a hash, with the data returned b
 ###### Approach 2 - Custom Room Exporter
 As the exporter is responsible for fetching data, it can store it in such a way that it is easier to use by a parent exporter. For example, if this `RoomExporter` is only used as an associated exporter of the `HouseCsvExporter`, we know that the parent only wants a pipe delimited list of room names.
 
-To provide this, the `RoomExporter` needs to overwrite the `save_entry` method. As with `on_entry`, this method is called for each entry found by the exporter. Unlike `on_entry`, `save_entry` is not an abstract method, and so provides default behaviour. By default, `save_entry` just builds an array of entries, and is defined as:
+To provide this, the `RoomExporter` needs to overwrite the `save_entry` method. As with `on_entry`, this method is called for each entry found by the exporter. Unlike `on_entry`, `save_entry` does provide some default behaviour. By default, `save_entry` just builds an array of entries when the exporter is run as a child, and is defined as:
 
     def save_entry(export_data, associated_data=nil)
+      return unless child_export?
+
       @export_entries ||= []
       @export_entries << export_data
     end
