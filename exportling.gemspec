@@ -24,7 +24,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'draper', '~> 2.1.0'
   s.add_dependency 'ransack'
   s.add_dependency 'hashie', '~> 3.2.0'
-  s.add_dependency 'hashie_rails', '~> 0.0.1'
+  s.add_dependency 'hashie-forbidden_attributes', '~> 0.1.1'
   s.add_dependency 'fog', '~> 1.24.0'
 
   s.add_development_dependency "rspec-rails", '~> 3.2.1'

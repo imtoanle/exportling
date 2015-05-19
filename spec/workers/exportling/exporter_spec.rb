@@ -83,7 +83,7 @@ describe Exportling::Exporter do
     let(:export)                { create(:export, params: export_params) }
     let(:exporter)              { HouseCsvExporter.new }
 
-    before  { exporter.perform(export, params: options_params) }
+    before  { exporter.perform(export.id, params: options_params) }
     subject { exporter.query_params }
     context 'export.params empty' do
       let(:export_params) { {} }
@@ -156,14 +156,29 @@ describe Exportling::Exporter do
     subject { exporter.save_entry(entry) }
 
     describe 'default behaviour' do
-      it 'inits @default_entries' do
-        subject
-        expect(exporter.instance_variable_get(:@export_entries)).to be_a(Array)
+      before { allow(exporter).to receive(:child_export?) { is_child } }
+
+      context 'for a root exporter' do
+        let(:is_child) { false }
+
+        it 'does not init @default_entries' do
+          subject
+          expect(exporter.instance_variable_get(:@export_entries)).to be_nil
+        end
       end
 
-      it 'saves the entry to @default_entries' do
-        subject
-        expect(exporter.instance_variable_get(:@export_entries)).to include(entry)
+      context 'for a child exporter' do
+        let(:is_child) { true }
+
+        it 'inits @default_entries' do
+          subject
+          expect(exporter.instance_variable_get(:@export_entries)).to be_a(Array)
+        end
+
+        it 'saves the entry to @default_entries' do
+          subject
+          expect(exporter.instance_variable_get(:@export_entries)).to include(entry)
+        end
       end
     end
   end
