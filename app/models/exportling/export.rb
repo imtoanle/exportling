@@ -7,7 +7,7 @@ class Exportling::Export < ActiveRecord::Base
 
   serialize :params
 
-  mount_uploader :output, ExportUploader
+  mount_uploader :output, Exportling::ExportUploader
 
   # Sidekiq worker class that will perform the export
   def worker_class

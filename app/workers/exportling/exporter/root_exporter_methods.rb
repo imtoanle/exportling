@@ -18,7 +18,6 @@ module Exportling
         on_entry(export_data, associated_data)
 
       end
-
       # Attach generated file to export and flag as complete
       finish_root_export
 
