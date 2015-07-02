@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
 
   s.add_dependency "rails", "~> 4.0"
   s.add_dependency 'carrierwave', '~> 0.10.0'
+  s.add_dependency 'carrierwave-aws'
   s.add_dependency 'sidekiq', '>= 2.17.0'
   s.add_dependency 'kaminari', '~> 0.15.1'
   s.add_dependency 'hash_to_hidden_fields', '~> 2.0.1'
@@ -25,7 +26,7 @@ Gem::Specification.new do |s|
   s.add_dependency 'ransack'
   s.add_dependency 'hashie', '~> 3.2.0'
   s.add_dependency 'hashie-forbidden_attributes', '~> 0.1.1'
-  s.add_dependency 'fog', '~> 1.24.0'
+  s.add_dependency 'strata', '~> 0.5.3'
 
   s.add_development_dependency "rspec-rails", '~> 3.2.1'
   s.add_development_dependency 'factory_girl_rails', '~> 4.4.1'

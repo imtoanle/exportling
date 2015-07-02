@@ -141,8 +141,10 @@ describe Exportling::Export do
           export.save!
         end
 
-        specify { expect(subject).to be_a(Exportling::ExportUploader) }
-        specify { expect(subject.path).to eq expected_file_path }
+        specify do
+          expect(subject).to be_a(Exportling::ExportUploader)
+          expect(subject.path).to include(expected_file_path)
+        end
 
         it 'creates the file' do
           expect(export.output.file.exists?).to be_truthy

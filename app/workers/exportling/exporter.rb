@@ -38,7 +38,6 @@ module Exportling
       else
         perform_as_root
       end
-
     # If there was an issue during the export process, make sure we fail the export
     # Not implemented error will be raised if the export classes haven't been set up properly
     rescue ::StandardError, ::NotImplementedError => e

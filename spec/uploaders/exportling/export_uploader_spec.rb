@@ -11,7 +11,7 @@ describe Exportling::ExportUploader do
   let(:uploader) { Exportling::ExportUploader.new(export, :output) }
   let(:expected_base_dir) { "#{Rails.root}/test_export_dir" }
 
-  describe '#fog_directory' do
+  describe '#directory_name' do
     context 'Exportling.s3_bucket_name is a block' do
       around(:each) do |example|
         s3_bucket_name =Exportling.s3_bucket_name
@@ -19,7 +19,7 @@ describe Exportling::ExportUploader do
         example.run
         Exportling.s3_bucket_name = s3_bucket_name
       end
-      specify { expect(uploader.fog_directory).to eq 'some-dir' }
+      specify { expect(uploader.directory_name).to eq 'some-dir' }
     end
 
     context 'Exportling.s3_bucket_name is a string' do
@@ -29,7 +29,7 @@ describe Exportling::ExportUploader do
         example.run
         Exportling.s3_bucket_name = s3_bucket_name
       end
-      specify { expect(uploader.fog_directory).to eq 'test-fog-directory' }
+      specify { expect(uploader.directory_name).to eq 'test-fog-directory' }
     end
 
   end
