@@ -24,8 +24,6 @@ Gem::Specification.new do |s|
   s.add_dependency 'hash_to_hidden_fields', '~> 2.0.1'
   s.add_dependency 'draper', '~> 2.1.0'
   s.add_dependency 'ransack'
-  s.add_dependency 'hashie', '~> 3.2.0'
-  s.add_dependency 'hashie-forbidden_attributes', '~> 0.1.1'
   s.add_dependency 'strata', '~> 0.5.3'
 
   s.add_development_dependency "rspec-rails", '~> 3.2.1'
