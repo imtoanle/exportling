@@ -85,7 +85,7 @@ class Exportling::ExportsController < Exportling::ApplicationController
   end
 
   def export_params
-    ExportRequest.new(params.require(:export))
+    ExportRequest.new(params.require(:export)).to_hash
   end
 
   def exports_scope

@@ -9,8 +9,6 @@ module Exportling
     require 'strata'
     require 'hash_to_hidden_fields'
     require 'draper'
-    require 'hashie'
-    require 'hashie-forbidden_attributes'
 
     # Make sure our query objects are required
     config.to_prepare do
