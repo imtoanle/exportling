@@ -4,7 +4,7 @@ module Exportling
     # Top level export
     # This is the export method that will be called for the entry Exporter
     def perform_as_root
-      @temp_export_file = Tempfile.new(['export', '.csv'])
+      @temp_export_file = Tempfile.new(['export', ".#{@export.file_type}"])
       on_start(@temp_export_file)
 
       find_each do |export_data|
