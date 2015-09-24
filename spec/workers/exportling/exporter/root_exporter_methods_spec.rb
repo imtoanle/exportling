@@ -37,6 +37,15 @@ describe Exportling::Exporter::RootExporterMethods do
         end
       end
     end
+
+    describe 'export file' do
+      let(:export) { create(:export, klass: exporter_class.to_s, file_type: 'pdf', status: 'created') }
+
+      it 'has correct file extension' do
+        subject
+        expect(export.output.path).to end_with('.pdf')
+      end
+    end
   end
 
   describe 'finish_root_export' do
