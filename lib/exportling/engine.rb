@@ -10,13 +10,6 @@ module Exportling
     require 'hash_to_hidden_fields'
     require 'draper'
 
-    # Make sure our query objects are required
-    config.to_prepare do
-      Dir["#{Exportling::Engine.root}/app/queries/**/*.rb"].each do |query|
-        require_dependency(query)
-      end
-    end
-
     # Set up the test suite to use rspec and factorygirl
     config.generators do |g|
       g.test_framework      :rspec,        fixture: false
