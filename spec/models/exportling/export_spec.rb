@@ -79,10 +79,17 @@ describe Exportling::Export do
   describe 'file_name' do
     let(:created_time)        { Time.zone.parse('Feb 1, 2009') }
     let(:export_id)           { export.id }
-    let(:expected_file_name)  { "#{export_id}_houses_2009-02-01.csv" }
 
     before  { export.update_column(:created_at, created_time) }
-    specify { expect(export.file_name).to eq expected_file_name }
+
+    context "given no export_file_name_suffix is set" do
+      specify { expect(export.file_name).to eq "#{export_id}_houses_2009-02-01.csv" }
+    end
+
+    context "given an export_file_name_suffix is set" do
+      before  { Exportling.export_file_name_suffix = "[DLM=Sensitive]" }
+      specify { expect(export.file_name).to eq "#{export_id}_houses_2009-02-01[DLM=Sensitive].csv" }
+    end
   end
 
   describe 'status changes' do

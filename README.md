@@ -52,6 +52,9 @@ Configure Exportling in your application
     # E.g. If using devise, this would be set to
     Exportling.export_owner_method = :current_user
 
+    # (Optional) Set a suffix that should be applied to export file names
+    Exportling.export_file_name_suffix = "suffix"
+
     # (Required) Set the S3 Bucket Name (used to set fog directory)
     #This option will either take a block which returns the S3 Bucket name
     Exportling.s3_bucket_name = -> {"#{Apartment::Tenant.current_tenant.downcase.gsub(/\s/, '_')}-exportling-#{Rails.env}" }
