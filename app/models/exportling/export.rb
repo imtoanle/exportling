@@ -50,7 +50,8 @@ class Exportling::Export < ActiveRecord::Base
   end
 
   def file_name
-    "#{id}_#{name.parameterize}_#{created_at.strftime('%Y-%m-%d')}.#{file_type}"
+    "#{id}_#{name.parameterize}_#{created_at.strftime('%Y-%m-%d')}" +
+    Exportling.export_file_name_suffix + ".#{file_type}"
   end
 
   def set_processing!
