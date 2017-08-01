@@ -15,6 +15,9 @@ require 'byebug'
 require 'database_cleaner'
 require 'sidekiq/testing'
 
+require 'rails-controller-testing'
+Rails::Controller::Testing.install
+
 Rails.backtrace_cleaner.remove_silencers!
 
 # Load support files
