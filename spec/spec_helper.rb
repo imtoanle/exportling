@@ -15,8 +15,10 @@ require 'byebug'
 require 'database_cleaner'
 require 'sidekiq/testing'
 
-require 'rails-controller-testing'
-Rails::Controller::Testing.install
+if Rails.version.start_with?('5')
+  require 'rails-controller-testing'
+  Rails::Controller::Testing.install
+end
 
 Rails.backtrace_cleaner.remove_silencers!
 
