@@ -82,13 +82,14 @@ describe Exportling::Export do
 
     before  { export.update_column(:created_at, created_time) }
 
-    context "given no export_file_name_suffix is set" do
-      specify { expect(export.file_name).to eq "#{export_id}_houses_2009-02-01.csv" }
-    end
-
     context "given an export_file_name_suffix is set" do
       before  { Exportling.export_file_name_suffix = "[DLM=Sensitive]" }
       specify { expect(export.file_name).to eq "#{export_id}_houses_2009-02-01[DLM=Sensitive].csv" }
+    end
+
+    context "given no export_file_name_suffix is set" do
+      before  { Exportling.export_file_name_suffix = nil }
+      specify { expect(export.file_name).to eq "#{export_id}_houses_2009-02-01.csv" }
     end
   end
 

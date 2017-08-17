@@ -16,13 +16,13 @@ Gem::Specification.new do |s|
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["spec/**/*"]
 
-  s.add_dependency "rails", "~> 4.0"
+  s.add_dependency "rails", ">= 4.0", "< 5.1"
   s.add_dependency 'carrierwave', '~> 0.10.0'
   s.add_dependency 'carrierwave-aws'
   s.add_dependency 'sidekiq', '>= 2.17.0'
   s.add_dependency 'kaminari', '~> 0.16'
   s.add_dependency 'hash_to_hidden_fields', '~> 2.0.1'
-  s.add_dependency 'draper', '~> 2.1.0'
+  s.add_dependency 'draper', '>= 2.1.0'
   s.add_dependency 'ransack'
   s.add_dependency 'strata', '~> 0.6'
 
@@ -31,7 +31,8 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'database_cleaner', '~> 1.2.0'
   s.add_development_dependency "byebug", '~> 2.7.0'
   s.add_development_dependency "sqlite3"
-  s.add_development_dependency 'sinatra', '>= 1.3.0'
+  s.add_development_dependency 'sinatra', '~> 1.3.0'
+  s.add_development_dependency 'rails-controller-testing'
   s.add_development_dependency 'codeclimate-test-reporter'
   s.add_development_dependency 'simplecov'
 end
