@@ -1,5 +1,5 @@
 source "https://rubygems.org"
-source 'https://nQPUkxkYvJdhiX87ansa@gem.fury.io/jobready/'
+source 'https://3Xj5_d8kaB9-pKBzcMez@gem.fury.io/jobready/'
 
 # Declare your gem's dependencies in exportling.gemspec.
 # Bundler will treat runtime dependencies like base dependencies, and
