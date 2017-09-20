@@ -60,6 +60,12 @@ Configure Exportling in your application
     Exportling.s3_bucket_name = -> {"#{Apartment::Tenant.current_tenant.downcase.gsub(/\s/, '_')}-exportling-#{Rails.env}" }
     # Or  the S3 Bucket name as String.
     Exportling.s3_bucket_name = 'my_s3_bucket'
+    
+    # (Optional) Set the store dir ( used to define the s3 directory path )
+    #This option will either take a lambda with one argument
+    Exportling.store_dir = ->(model) { File.join(Tenant.current_base_dir, 'exports', model.owner_id.to_s).to_s }
+    # Or a String
+    Exportling.store_dir = 'all_exports'
 
 	# (Optional) Set the authorization mechanism for ensuring exports are allowed
 	# Only :pundit is supported currently.

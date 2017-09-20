@@ -3,7 +3,7 @@ require "exportling/engine"
 module Exportling
   mattr_accessor :export_owner_class, :export_owner_method,
     :export_file_name_suffix, :base_storage_directory, :raise_on_fail,
-    :authorization_mechanism, :s3_bucket_name
+    :authorization_mechanism, :s3_bucket_name, :store_dir
 
   # Allow the base application to set the owner of the export
   def self.export_owner_class
@@ -40,5 +40,9 @@ module Exportling
 
   def self.s3_bucket_name
     @@s3_bucket_name
+  end
+
+  def self.store_dir
+    @@store_dir || -> (model){ "exports/#{model.owner_id}" }
   end
 end

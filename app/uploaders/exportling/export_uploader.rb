@@ -12,7 +12,11 @@ module Exportling
     end
 
     def store_dir
-      "exports/#{model.owner_id}"
+      if Exportling.store_dir.respond_to?(:call)
+        Exportling.store_dir.call(model)
+      else
+        Exportling.store_dir
+      end
     end
 
     def cache_dir

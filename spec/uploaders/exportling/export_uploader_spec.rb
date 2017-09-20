@@ -35,7 +35,23 @@ describe Exportling::ExportUploader do
   end
 
   describe '#store_dir' do
-    specify { expect(uploader.store_dir).to eq "exports/#{owner.id}" }
+    let(:export) { instance_double(Exportling::Export, owner_id: 234) }
+
+    context 'Exportling.store_dir default' do
+      specify { expect(uploader.store_dir).to eq 'exports/234' }
+    end
+
+    context 'Exportling.store_dir is a string' do
+      before { allow(Exportling).to receive(:store_dir).and_return('my_exports') }
+
+      specify { expect(uploader.store_dir).to eq('my_exports') }
+    end
+
+    context 'Exportling.store_dir is a block' do
+      before { allow(Exportling).to receive(:store_dir).and_return(->(model){"jobready/exports/#{model.owner_id}"}) }
+
+      specify { expect(uploader.store_dir).to eq('jobready/exports/234') }
+    end
   end
 
   describe '#cache_dir' do
