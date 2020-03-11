@@ -74,7 +74,7 @@ describe Exportling::ExportsController, type: :controller do
   describe 'GET #new' do
     let(:params)    { { klass: p_klass, params: p_params, file_type: p_file_type } }
     let(:p_params)  { { 'foo' => 'bar' } }
-    let(:request)   { get :new, export: params }
+    let(:request)   { get :new, params: { export: params } }
 
     context 'given valid params' do
       before { request }
@@ -124,7 +124,7 @@ describe Exportling::ExportsController, type: :controller do
   end
 
   describe 'POST #create' do
-    let(:request) { post :create, export: params }
+    let(:request) { post :create, params: { export: params } }
 
     let(:params) do
       {
@@ -194,7 +194,7 @@ describe Exportling::ExportsController, type: :controller do
   end
 
   describe 'GET #download' do
-    subject { get :download, id: export.id }
+    subject { get :download, params: { id: export.id } }
     shared_examples :download_error do
       it 'redirects to the :index view' do
         expect(response).to redirect_to(root_path)

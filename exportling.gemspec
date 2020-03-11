@@ -12,6 +12,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://github.com/jobready/exportling"
   s.summary     = "Rails record exporting engine"
   s.description = "A simple rails engine for exporting records"
+  s.required_ruby_version = '>= 2.3.6'
 
   s.files = Dir["{app,config,db,lib}/**/*", "MIT-LICENSE", "Rakefile", "README.rdoc"]
   s.test_files = Dir["spec/**/*"]
@@ -31,7 +32,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'database_cleaner', '~> 1.2.0'
   s.add_development_dependency "byebug", '~> 2.7.0'
   s.add_development_dependency "sqlite3"
-  s.add_development_dependency 'sinatra', '~> 1.3.0'
+  s.add_development_dependency 'sinatra'
   s.add_development_dependency 'rails-controller-testing'
   s.add_development_dependency 'codeclimate-test-reporter'
   s.add_development_dependency 'simplecov'
