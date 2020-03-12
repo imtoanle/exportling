@@ -27,7 +27,7 @@ describe 'Exportling Config' do
 
       context 'and export fails' do
         include_context :fail_export
-        specify { expect { subject }.to raise_error }
+        specify { expect { subject }.to raise_error(RuntimeError) }
       end
     end
 
