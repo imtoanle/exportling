@@ -18,7 +18,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir["spec/**/*"]
 
   s.add_dependency "rails", ">= 4.0", "< 6.0"
-  s.add_dependency 'carrierwave', '~> 0.10.0'
+  s.add_dependency 'carrierwave', '~> 2.0'
   s.add_dependency 'carrierwave-aws'
   s.add_dependency 'sidekiq', '>= 2.17.0'
   s.add_dependency 'kaminari'
